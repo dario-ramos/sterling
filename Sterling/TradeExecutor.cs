@@ -762,7 +762,7 @@ namespace Sterling
                             if (counter < n - 1) counter++;
                             stratPosTrack = counter;
                         }
-                        else
+                        else if(counter > 0)
                         {
                             while (stopFailed)
                             {
@@ -818,7 +818,7 @@ namespace Sterling
 
 
                     }
-                    else
+                    else if(counter > 0)
                     {
                         if (stopFailed)
                         {
