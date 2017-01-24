@@ -104,7 +104,7 @@ namespace Sterling
             private set { }
         }
 
-        public void cancelAllOrders() //<CHG> new method
+        public void CancelAllOrders() //<CHG> new method
         {
             //Retrieve all open orders for this symbol and account
             SterlingLib.STIOrderMaint oMaint = new SterlingLib.STIOrderMaint();
@@ -121,25 +121,25 @@ namespace Sterling
             }
         }
 
-        public void runStrategy(ref DataGridViewRow row, string s, int fPos)
+        public void RunStrategy(ref DataGridViewRow row, string s, int fPos)
         {
             this.runningRow = row;
             this.strategyIndex = fPos;
             this.side = s;
-            justUpdate();
+            JustUpdate();
             if (s == "B")
             {
                 this.lastPrice = 0;
-                runBuyStrategy();
+                RunBuyStrategy();
             }
             else
             {
                 this.lastPrice = 100000;
-                runSellStrategy();
+                RunSellStrategy();
             }
         }
 
-        public void stopTrade()
+        public void StopTrade()
         {
             if (side == "B")
             {
@@ -172,7 +172,7 @@ namespace Sterling
             }
         }
 
-        private string calcPnL(double currPrice, string side)
+        private string CalcPnL(double currPrice, string side)
         {
             double sellAmt = 0;
             double buyAmt = 0;
@@ -203,7 +203,7 @@ namespace Sterling
             return pnl.ToString();
         }
 
-        private void justUpdate()
+        private void JustUpdate()
         {
             try
             {
@@ -233,7 +233,7 @@ namespace Sterling
                 if (structQuote.bLastPrice == 1)
                 {
                     runningRow.Cells[3].Value = structQuote.fLastPrice.ToString();
-                    runningRow.Cells[5].Value = calcPnL(structQuote.fLastPrice, "B");
+                    runningRow.Cells[5].Value = CalcPnL(structQuote.fLastPrice, "B");
                     lastPrice = structQuote.fLastPrice;
                 }
 
@@ -257,7 +257,7 @@ namespace Sterling
                 if (structQuote.bLastPrice == 1)
                 {
                     runningRow.Cells[3].Value = structQuote.fLastPrice.ToString();
-                    runningRow.Cells[5].Value = calcPnL(structQuote.fLastPrice, "S");
+                    runningRow.Cells[5].Value = CalcPnL(structQuote.fLastPrice, "S");
                     lastPrice = structQuote.fLastPrice;
                 }
 
@@ -276,7 +276,7 @@ namespace Sterling
             TradeStopped?.Invoke(symbol);
         }
 
-        private void runBuyStrategy()
+        private void RunBuyStrategy()
         {
 
             double weightedSum;
@@ -546,7 +546,7 @@ namespace Sterling
 
         }
 
-        private void runSellStrategy()
+        private void RunSellStrategy()
         {
 
             double weightedSum;

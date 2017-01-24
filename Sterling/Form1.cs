@@ -72,7 +72,7 @@ namespace Sterling
 
         }
 
-        private void cancelButton_Click(object sender, EventArgs e)
+        private void CancelButton_Click(object sender, EventArgs e)
         {
             if (runningDataGridView.SelectedRows.Count > 0 && runningDataGridView.SelectedRows.Count <= 1)
             {
@@ -81,7 +81,7 @@ namespace Sterling
                 {
                     checkRun[selectedIndex] = false;
                     TradeExecutor trade = (TradeExecutor)runningStrats[selectedIndex];
-                    trade.cancelAllOrders();
+                    trade.CancelAllOrders();
                 }
             }
             else
@@ -117,14 +117,14 @@ namespace Sterling
                     if (symbolValue != null && symbolValue.ToString().Equals(symbol))
                     {
                         symbolRow = row.Index;
-                        stopStrategy(symbolRow);
+                        StopStrategy(symbolRow);
                         break;
                     }
                 }
             });
         }
 
-        private void stopAllButton_Click(object sender, EventArgs e)
+        private void StopAllButton_Click(object sender, EventArgs e)
         {
             for (int i = 0; i < runningDataGridView.Rows.Count - 1; i++)
             {
@@ -141,7 +141,7 @@ namespace Sterling
                     }
 
                     TradeExecutor trade = (TradeExecutor)runningStrats[selectedIndex];
-                    trade.stopTrade();
+                    trade.StopTrade();
                     string sym = runningDataGridView.Rows[selectedIndex].Cells[0].Value.ToString();
                     string pnl = "";
                     try
@@ -166,12 +166,12 @@ namespace Sterling
         }
 
         //<CHG> Separated GUI logic from business logic a bit
-        private void stopButton_Click(object sender, EventArgs e)
+        private void StopButton_Click(object sender, EventArgs e)
         {
             if (runningDataGridView.SelectedRows.Count > 0 && runningDataGridView.SelectedRows.Count <= 1)
             {
                 int selectedIndex = runningDataGridView.CurrentRow.Index;
-                stopStrategy(selectedIndex);
+                StopStrategy(selectedIndex);
             }
             else
             {
@@ -180,13 +180,13 @@ namespace Sterling
         }
 
         //<CHG> New method
-        private void stopStrategy(int strategyIndex)
+        private void StopStrategy(int strategyIndex)
         {
             if (runningDataGridView.Rows[strategyIndex].Cells[0].Value != null)
             {
                 checkRun[strategyIndex] = false;
                 TradeExecutor trade = (TradeExecutor)runningStrats[strategyIndex];
-                trade.stopTrade();
+                trade.StopTrade();
                 string sym = runningDataGridView.Rows[strategyIndex].Cells[0].Value.ToString();
                 string pnl = "";
                 try
@@ -207,7 +207,7 @@ namespace Sterling
             }
         }
 
-        private void submitButton_Click(object sender, EventArgs e)
+        private void SubmitButton_Click(object sender, EventArgs e)
         {
             if ((StrategyComboBox.SelectedIndex > -1) && (DPRTextBox.Text != "") && (PriceTextBox.Text != "") && (acctTextBox.Text != "") &&
                 (QuantTextBox.Text != "") && (SymbolTextBox.Text != "") && (ExchangeTextBox.Text != "") && (NTextBox.Text != "") &&
@@ -244,7 +244,7 @@ namespace Sterling
                         bool run = true;
                         checkRun.Insert(runningStratsCounter, run);
                         Task worker;
-                        worker = new Task(() => mTrade.runStrategy(ref row, side, runningStratsCounter)/*, Canceller.Token*/);
+                        worker = new Task(() => mTrade.RunStrategy(ref row, side, runningStratsCounter)/*, Canceller.Token*/);
 
                         //cancelTokenSources.Add(Canceller);
                         runningTasks.Insert(runningStratsCounter, worker);

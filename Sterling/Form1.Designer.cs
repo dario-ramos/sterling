@@ -84,7 +84,7 @@
             this.button1.TabIndex = 12;
             this.button1.Text = "Submit";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.submitButton_Click);
+            this.button1.Click += new System.EventHandler(this.SubmitButton_Click);
             // 
             // BuyRadioButton
             // 
@@ -161,7 +161,7 @@
             this.StopButton.TabIndex = 14;
             this.StopButton.Text = "Stop";
             this.StopButton.UseVisualStyleBackColor = true;
-            this.StopButton.Click += new System.EventHandler(this.stopButton_Click);
+            this.StopButton.Click += new System.EventHandler(this.StopButton_Click);
             // 
             // StopAllButton
             // 
@@ -172,7 +172,7 @@
             this.StopAllButton.TabIndex = 15;
             this.StopAllButton.Text = "Stop All";
             this.StopAllButton.UseVisualStyleBackColor = true;
-            this.StopAllButton.Click += new System.EventHandler(this.stopAllButton_Click);
+            this.StopAllButton.Click += new System.EventHandler(this.StopAllButton_Click);
             // 
             // runningDataGridView
             // 
@@ -461,7 +461,7 @@
             this.cancelButton.TabIndex = 36;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
-            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
+            this.cancelButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
             // Form1
             // 
