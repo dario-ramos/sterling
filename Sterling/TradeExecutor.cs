@@ -467,7 +467,7 @@ namespace Sterling
                             if (counter < n - 1) counter++;
                             stratPosTrack = counter;
                         }
-                        else
+                        else if(counter > 0) //Don't try to stop until at least one order was placed
                         {
                             while (stopFailed)
                             {
@@ -521,7 +521,7 @@ namespace Sterling
                         }
 
                     }
-                    else
+                    else if(counter > 0)  //Don't try to stop until at least one order was placed
                     {
                         if (stopFailed)
                         {
