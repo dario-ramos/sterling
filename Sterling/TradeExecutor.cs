@@ -220,6 +220,23 @@ namespace Sterling
             }
         }
 
+        private void CalculateDSPSellPrices()
+        {
+            double weightedSum = r * s;
+            int netQuantity = s;
+
+            for (int j = 0; j < n; j++)
+            {
+                sellPrices[j] = price - j * dpr;
+                sellQuantityTracker[j] = quantity;
+                weightedSum += sellPrices[j] * sellQuantityTracker[j];
+                netQuantity += quantity;
+                buyQuantityTracker[j] = netQuantity;
+                double weightedAvg = weightedSum / netQuantity;
+                buyPrices[j] = weightedAvg;
+            }
+        }
+
         private void CalculateIQ_IncrementBuyPrices()
         {
             double weightedSum = 0;
@@ -252,6 +269,36 @@ namespace Sterling
             }
         }
 
+        private void CalculateIQ_IncrementSellPrices()
+        {
+            double weightedSum = 0;
+            int netQuantity = 0;
+            //int tempQuant = quantity;
+            for (int j = 0; j < s; j++)
+            {
+                sellPrices[j] = price - j * dpr;
+                int tempQuant = quantity + j * quantity;
+                sellQuantityTracker[j] = tempQuant;
+                weightedSum += sellPrices[j] * sellQuantityTracker[j];
+                netQuantity += tempQuant;
+                buyQuantityTracker[j] = netQuantity;
+                double weightedAvg = weightedSum / netQuantity;
+                buyPrices[j] = weightedAvg + (r / (netQuantity * (j + 1)));
+            }
+
+            for (int k = s; k < n; k++)
+            {
+                sellPrices[k] = price - k * dpr;
+                int tempQuant = quantity + k * quantity;
+                sellQuantityTracker[k] = tempQuant;
+                weightedSum += sellPrices[k] * sellQuantityTracker[k];
+                netQuantity += tempQuant;
+                buyQuantityTracker[k] = netQuantity;
+                double weightedAvg = weightedSum / netQuantity;
+                buyPrices[k] = weightedAvg;
+            }
+        }
+
         private void CalculateIQ_RSLBuyPrices()
         {
             double weightedSum = 0;
@@ -280,6 +327,34 @@ namespace Sterling
             }
         }
 
+        private void CalculateIQ_RSLSellPrices()
+        {
+            double weightedSum = 0;
+            int netQuantity = 0;
+
+            for (int j = 0; j < s; j++)
+            {
+                sellPrices[j] = price - j * dpr;
+                sellQuantityTracker[j] = quantity;
+                weightedSum += sellPrices[j] * quantity;
+                netQuantity += quantity;
+                double weightedAvg = weightedSum / netQuantity;
+                buyPrices[j] = weightedAvg + (r / (quantity * (j + 1)));
+                buyQuantityTracker[j] = netQuantity;
+            }
+
+            for (int k = s; k < n; k++)
+            {
+                sellPrices[k] = price - k * dpr;
+                sellQuantityTracker[k] = quantity;
+                weightedSum += sellPrices[k] * quantity;
+                netQuantity += quantity;
+                double weightedAvg = weightedSum / netQuantity;
+                buyPrices[k] = weightedAvg;
+                buyQuantityTracker[k] = netQuantity;
+            }
+        }
+
         private void CalculateBuyStratPrices()
         {
             if (strategy.Equals("IQ_RSL"))
@@ -293,6 +368,22 @@ namespace Sterling
             else
             {
                 CalculateDSPBuyPrices();
+            }
+        }
+
+        private void CalculateSellStratPrices()
+        {
+            if (strategy.Equals("IQ_RSL"))
+            {
+                CalculateIQ_RSLSellPrices();
+            }
+            else if (strategy.Equals("IQ_Increment_Qty"))
+            {
+                CalculateIQ_IncrementSellPrices();
+            }
+            else
+            {
+                CalculateDSPSellPrices();
             }
         }
 
@@ -561,85 +652,7 @@ namespace Sterling
 
         private void RunSellStrategy()
         {
-
-            double weightedSum;
-            int netQuantity;
-
-            if (strategy.Equals("IQ_RSL"))
-            {
-                weightedSum = 0;
-                netQuantity = 0;
-
-                for (int j = 0; j < s; j++)
-                {
-                    sellPrices[j] = price - j * dpr;
-                    sellQuantityTracker[j] = quantity;
-                    weightedSum += sellPrices[j] * quantity;
-                    netQuantity += quantity;
-                    double weightedAvg = weightedSum / netQuantity;
-                    buyPrices[j] = weightedAvg + (r / (quantity * (j + 1)));
-                    buyQuantityTracker[j] = netQuantity;
-                }
-
-                for (int k = s; k < n; k++)
-                {
-                    sellPrices[k] = price - k * dpr;
-                    sellQuantityTracker[k] = quantity;
-                    weightedSum += sellPrices[k] * quantity;
-                    netQuantity += quantity;
-                    double weightedAvg = weightedSum / netQuantity;
-                    buyPrices[k] = weightedAvg;
-                    buyQuantityTracker[k] = netQuantity;
-                }
-
-            }
-            else if (strategy.Equals("IQ_Increment_Qty"))
-            {
-                weightedSum = 0;
-                netQuantity = 0;
-                //int tempQuant = quantity;
-                for (int j = 0; j < s; j++)
-                {
-                    sellPrices[j] = price - j * dpr;
-                    int tempQuant = quantity + j * quantity;
-                    sellQuantityTracker[j] = tempQuant;
-                    weightedSum += sellPrices[j] * sellQuantityTracker[j];
-                    netQuantity += tempQuant;
-                    buyQuantityTracker[j] = netQuantity;
-                    double weightedAvg = weightedSum / netQuantity;
-                    buyPrices[j] = weightedAvg + (r / (netQuantity * (j + 1)));
-                }
-
-                for (int k = s; k < n; k++)
-                {
-                    sellPrices[k] = price - k * dpr;
-                    int tempQuant = quantity + k * quantity;
-                    sellQuantityTracker[k] = tempQuant;
-                    weightedSum += sellPrices[k] * sellQuantityTracker[k];
-                    netQuantity += tempQuant;
-                    buyQuantityTracker[k] = netQuantity;
-                    double weightedAvg = weightedSum / netQuantity;
-                    buyPrices[k] = weightedAvg;
-                }
-
-            }
-            else
-            {
-                weightedSum = r * s;
-                netQuantity = s;
-
-                for (int j = 0; j < n; j++)
-                {
-                    sellPrices[j] = price - j * dpr;
-                    sellQuantityTracker[j] = quantity;
-                    weightedSum += sellPrices[j] * sellQuantityTracker[j];
-                    netQuantity += quantity;
-                    buyQuantityTracker[j] = netQuantity;
-                    double weightedAvg = weightedSum / netQuantity;
-                    buyPrices[j] = weightedAvg;
-                }
-
-            }
+            CalculateSellStratPrices();
 
             try
             {
