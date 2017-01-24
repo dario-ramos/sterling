@@ -42,11 +42,11 @@ namespace Sterling
             checkRun[strategyIndex] = running;
         }
 
-        private void AppendText(String text)
+        private void OnLogMessage(String text)
         {
             if (this.InvokeRequired)
             {
-                this.Invoke(new Action<string>(AppendText), new object[] { text });
+                this.BeginInvoke(new Action<string>(OnLogMessage), new object[] { text });
                 return;
             }
             LogTextBox.AppendText(text);
@@ -232,6 +232,7 @@ namespace Sterling
                     {
                         mTrade = new TradeExecutor(account, symbol, exchange, strategy, price, quantity, dpr, r, s, this);
                         mTrade.TradeStopped += OnTradeStopped;
+                        mTrade.LogMessage += OnLogMessage;
                         runningStrats.Insert(runningStratsCounter, mTrade);
                         DataGridViewRow row = (DataGridViewRow)runningDataGridView.Rows[0].Clone();
                         row.Visible = true;
