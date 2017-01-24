@@ -492,13 +492,6 @@ namespace Sterling
                                 MessageBox.Show("Error while placing limit buy order.");
                                 System.Windows.Forms.Application.ExitThread();
                             }
-                            /*if (ord1 != 0)
-                            {
-                                mForm.AppendText("Error placing the order- Limit @ " + buyPrices[counter].ToString() +
-                                    ", Quantity- " + buyQuantityTracker[counter].ToString() + ", Symbol- " + symbol +
-                                    ", Error code- " + ord1.ToString() + "\n");
-                            }*/
-
 
                             runningRow.Cells[1].Value = buyPrices[counter].ToString();
                             runningRow.Cells[2].Value = sellQuantityTracker[counter].ToString();
@@ -546,12 +539,6 @@ namespace Sterling
                                     MessageBox.Show("Error while placing stop sell order.");
                                     System.Windows.Forms.Application.ExitThread();
                                 }
-                                /*if (ord3 != 0)
-                                {
-                                    mForm.AppendText("Error placing the order- Stop @ " + sellPrices[counter].ToString() +
-                                        ", Quantity- " + sellQuantityTracker[counter].ToString() + ", Symbol- " + symbol +
-                                        ", Error code- " + ord3.ToString() + "\n");
-                                }*/
 
                             }
 
@@ -684,15 +671,6 @@ namespace Sterling
                                 System.Windows.Forms.Application.ExitThread();
                             }
 
-                            /*
-                            if (ord1 != 0)
-                            {
-                                mForm.AppendText("Error placing the order- Limit @ " + sellPrices[counter].ToString() +
-                                    ", Quantity- " + sellQuantityTracker[counter].ToString() + ", Symbol- " + symbol +
-                                    ", Error code- " + ord1.ToString() + "\n");
-                            }*/
-
-
                             runningRow.Cells[1].Value = sellPrices[counter].ToString();
                             runningRow.Cells[2].Value = buyQuantityTracker[counter].ToString();
                             runningRow.Cells[4].Value = buyPrices[counter].ToString();
@@ -721,15 +699,6 @@ namespace Sterling
                                     System.Windows.Forms.Application.ExitThread();
                                 }
 
-                                /*
-                                if (ord2 != 0)
-                                {
-                                    mForm.AppendText("Error placing the order- Stop @ " + buyPrices[counter].ToString() +
-                                        ", Quantity- " + buyQuantityTracker[counter].ToString() + ", Symbol- " + symbol +
-                                        ", Error code- " + ord2.ToString() + "\n");
-                                }*/
-
-
                             }
                             else
                             {
@@ -749,13 +718,6 @@ namespace Sterling
                                     MessageBox.Show("Error occurred while placing stop buy order.");
                                     System.Windows.Forms.Application.ExitThread();
                                 }
-
-                                /*if(ord3 != 0)
-                                {
-                                    mForm.AppendText("Error placing the order- Stop @ " + buyPrices[counter].ToString() +
-                                        ", Quantity- " + buyQuantityTracker[counter].ToString() + ", Symbol- " + symbol +
-                                        ", Error code- " + ord3.ToString() + "\n");
-                                }*/
 
                             }
 
