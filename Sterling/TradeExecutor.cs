@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml.Serialization;
@@ -8,7 +9,8 @@ namespace Sterling
     //<CHG> Moved this class to a separate file (it was inside Form1.cs)
     public class TradeExecutor
     {
-        public event Action<string> tradeStopped; //<CHG> Added this event to notify that trade stopped
+        public event Action<string> LogMessage; //<CHG> Added this event to log messages without a reference to the form
+        public event Action<string> TradeStopped; //<CHG> Added this event to notify that trade stopped
 
         private string account;
         private string exchange;
@@ -24,6 +26,7 @@ namespace Sterling
         private int[] buyQuantityTracker;
         private int[] sellQuantityTracker;
         private int n = 1000;
+        private IStrategyManager strategyManager;
         private SterlingLib.STIOrder stiLimitOrder;
         private SterlingLib.STIOrder stiStopOrder;
         private SterlingLib.STIOrder stiClosingOrder;
@@ -35,12 +38,11 @@ namespace Sterling
         private int stratPosTrack;
         //private int runningRow;
         private DataGridViewRow runningRow;
-        private Form1 mForm;
         private string side;
-        private int formPos;
+        private int strategyIndex;
         private bool stopFailed = false;
 
-        public TradeExecutor(string acct, string sym, string ex, string strat, double p, int quant, double DPR, double R, int S, Form1 mf)
+        public TradeExecutor(string acct, string sym, string ex, string strat, double p, int quant, double DPR, double R, int S, IStrategyManager strategyManager)
         {
             try
             {
@@ -83,7 +85,7 @@ namespace Sterling
                 //this.stiStopOrder.PriceType = SterlingLib.STIPriceTypes.ptSTISvrStp;
                 this.stopOrderID = null;
                 this.stratPosTrack = 0;
-                this.mForm = mf;
+                this.strategyManager = strategyManager;
             }
             catch
             {
@@ -122,7 +124,7 @@ namespace Sterling
         public void runStrategy(ref DataGridViewRow row, string s, int fPos)
         {
             this.runningRow = row;
-            this.formPos = fPos;
+            this.strategyIndex = fPos;
             this.side = s;
             justUpdate();
             if (s == "B")
@@ -216,6 +218,11 @@ namespace Sterling
 
         }
 
+        private void OnLogMessage(string msg)
+        {
+            LogMessage?.Invoke(msg);
+        }
+
         private void OnSTIQuoteUpdateXML_Buy(ref string strQuote)
         {
             try
@@ -266,7 +273,7 @@ namespace Sterling
 
         private void OnTradeStopped(string symbol) //<CHG> Added this method to fire the event
         {
-            tradeStopped?.Invoke(symbol);
+            TradeStopped?.Invoke(symbol);
         }
 
         private void runBuyStrategy()
@@ -363,7 +370,7 @@ namespace Sterling
 
                 while (true)
                 {
-                    if ((bool)mForm.checkRun[formPos])
+                    if (strategyManager.StrategyRunning(strategyIndex))
                     {
                         if (lastPrice >= buyPrices[counter])
                         {
@@ -373,7 +380,7 @@ namespace Sterling
                             try
                             {
                                 ord1 = stiLimitOrder.SubmitOrder();
-                                mForm.AppendText("Limit @ " + buyPrices[counter].ToString() + ", Quantity- " + buyQuantityTracker[counter].ToString() +
+                                OnLogMessage("Limit @ " + buyPrices[counter].ToString() + ", Quantity- " + buyQuantityTracker[counter].ToString() +
                                 ", Symbol- " + symbol + ", Error code- " + ord1.ToString() + "\n");
                             }
                             catch
@@ -407,7 +414,7 @@ namespace Sterling
                                 try
                                 {
                                     ord2 = stiStopOrder.SubmitOrder();
-                                    mForm.AppendText("Stop @ " + sellPrices[counter].ToString() +
+                                    OnLogMessage("Stop @ " + sellPrices[counter].ToString() +
                                             ", Quantity- " + sellQuantityTracker[counter].ToString() + ", Symbol- " + symbol +
                                             ", Error code- " + ord2.ToString() + "\n");
 
@@ -424,7 +431,7 @@ namespace Sterling
                                 try
                                 {
                                     ord3 = stiStopOrder.ReplaceOrder(0, stopOrderID);
-                                    mForm.AppendText("Stop @ " + sellPrices[counter].ToString() +
+                                    OnLogMessage("Stop @ " + sellPrices[counter].ToString() +
                                         ", Quantity- " + sellQuantityTracker[counter].ToString() + ", Symbol- " + symbol +
                                         ", Error code- " + ord3.ToString() + "\n");
                                     if (ord3 != 0) stopFailed = true;
@@ -458,7 +465,7 @@ namespace Sterling
                                 try
                                 {
                                     ord4 = stiStopOrder.ReplaceOrder(0, stopOrderID);
-                                    mForm.AppendText("Stop @ " + sellPrices[counter - 1].ToString() +
+                                    OnLogMessage("Stop @ " + sellPrices[counter - 1].ToString() +
                                         ", Quantity- " + sellQuantityTracker[counter - 1].ToString() + ", Symbol- " + symbol +
                                         ", Error code- " + ord4.ToString() + "\n");
                                     if (ord4 != 0) //<CHG> Added call to fire trade stopped event
@@ -484,7 +491,7 @@ namespace Sterling
                                 {
                                     if (lastPrice <= sellPrices[counter - 1])
                                     {
-                                        mForm.checkRun[formPos] = false;
+                                        strategyManager.SetStrategyRunningStatus(strategyIndex, false);
                                         MessageBox.Show("The buy price for this strategy fell below the stop price. No more orders will be placed for this strategy.");
                                     }
                                 }
@@ -492,7 +499,7 @@ namespace Sterling
                                 {
                                     if (lastPrice <= sellPrices[counter])
                                     {
-                                        mForm.checkRun[formPos] = false;
+                                        strategyManager.SetStrategyRunningStatus(strategyIndex, false);
                                         MessageBox.Show("The buy price for this strategy fell below the stop price. No more orders will be placed for this strategy.");
                                     }
                                 }
@@ -512,7 +519,7 @@ namespace Sterling
                             try
                             {
                                 ord4 = stiStopOrder.ReplaceOrder(0, stopOrderID);
-                                mForm.AppendText("Stop @ " + sellPrices[counter - 1].ToString() +
+                                OnLogMessage("Stop @ " + sellPrices[counter - 1].ToString() +
                                     ", Quantity- " + sellQuantityTracker[counter - 1].ToString() + ", Symbol- " + symbol +
                                     ", Error code- " + ord4.ToString() + "\n");
                                 if (ord4 != 0) stopFailed = true;
@@ -631,7 +638,7 @@ namespace Sterling
 
                 while (true)
                 {
-                    if ((bool)mForm.checkRun[formPos])
+                    if ( strategyManager.StrategyRunning(strategyIndex))
                     {
                         if (lastPrice <= sellPrices[counter])
                         {
@@ -641,7 +648,7 @@ namespace Sterling
                             try
                             {
                                 ord1 = stiLimitOrder.SubmitOrder();
-                                mForm.AppendText("Limit @ " + sellPrices[counter].ToString() +
+                                OnLogMessage("Limit @ " + sellPrices[counter].ToString() +
                                     ", Quantity- " + sellQuantityTracker[counter].ToString() + ", Symbol- " + symbol +
                                     ", Error code- " + ord1.ToString() + "\n");
                             }
@@ -678,7 +685,7 @@ namespace Sterling
                                 try
                                 {
                                     ord2 = stiStopOrder.SubmitOrder();
-                                    mForm.AppendText("Stop @ " + buyPrices[counter].ToString() +
+                                    OnLogMessage("Stop @ " + buyPrices[counter].ToString() +
                                         ", Quantity- " + buyQuantityTracker[counter].ToString() + ", Symbol- " + symbol +
                                         ", Error code- " + ord2.ToString() + "\n");
                                 }
@@ -704,7 +711,7 @@ namespace Sterling
                                 try
                                 {
                                     ord3 = stiStopOrder.ReplaceOrder(0, stopOrderID);
-                                    mForm.AppendText("Stop @ " + buyPrices[counter].ToString() +
+                                    OnLogMessage("Stop @ " + buyPrices[counter].ToString() +
                                         ", Quantity- " + buyQuantityTracker[counter].ToString() + ", Symbol- " + symbol +
                                         ", Error code- " + ord3.ToString() + "\n");
                                     if (ord3 != 0) stopFailed = true;
@@ -740,7 +747,7 @@ namespace Sterling
                                 try
                                 {
                                     ord4 = stiStopOrder.ReplaceOrder(0, stopOrderID);
-                                    mForm.AppendText("Stop @ " + buyPrices[counter - 1].ToString() +
+                                    OnLogMessage("Stop @ " + buyPrices[counter - 1].ToString() +
                                         ", Quantity- " + buyQuantityTracker[counter - 1].ToString() + ", Symbol- " + symbol +
                                         ", Error code- " + ord4.ToString() + "\n");
                                     if (ord4 != 0) //<CHG> Fire tradeStopped event
@@ -766,7 +773,7 @@ namespace Sterling
                                 {
                                     if (lastPrice >= buyPrices[counter - 1])
                                     {
-                                        mForm.checkRun[formPos] = false;
+                                        strategyManager.SetStrategyRunningStatus(strategyIndex, false);
                                         MessageBox.Show("The sell price for this strategy is above the stop price. No more orders will be placed for this strategy.");
                                     }
                                 }
@@ -774,7 +781,7 @@ namespace Sterling
                                 {
                                     if (lastPrice >= buyPrices[counter])
                                     {
-                                        mForm.checkRun[formPos] = false;
+                                        strategyManager.SetStrategyRunningStatus(strategyIndex, false);
                                         MessageBox.Show("The sell price for this strategy is above the stop price. No more orders will be placed for this strategy.");
                                     }
                                 }
@@ -796,7 +803,7 @@ namespace Sterling
                             try
                             {
                                 ord4 = stiStopOrder.ReplaceOrder(0, stopOrderID);
-                                mForm.AppendText("Stop @ " + buyPrices[counter - 1].ToString() +
+                                OnLogMessage("Stop @ " + buyPrices[counter - 1].ToString() +
                                     ", Quantity- " + buyQuantityTracker[counter - 1].ToString() + ", Symbol- " + symbol +
                                     ", Error code- " + ord4.ToString() + "\n");
                                 if (ord4 != 0) stopFailed = true;

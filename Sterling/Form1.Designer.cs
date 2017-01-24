@@ -97,7 +97,6 @@
             this.BuyRadioButton.TabStop = true;
             this.BuyRadioButton.Text = "Buy";
             this.BuyRadioButton.UseVisualStyleBackColor = true;
-            this.BuyRadioButton.CheckedChanged += new System.EventHandler(this.buyRadioButton_CheckedChanged);
             // 
             // SellRadioButton
             // 
@@ -110,7 +109,6 @@
             this.SellRadioButton.TabStop = true;
             this.SellRadioButton.Text = "Sell";
             this.SellRadioButton.UseVisualStyleBackColor = true;
-            this.SellRadioButton.CheckedChanged += new System.EventHandler(this.sellRadioButton_CheckedChanged);
             // 
             // PriceTextBox
             // 
@@ -118,7 +116,6 @@
             this.PriceTextBox.Name = "PriceTextBox";
             this.PriceTextBox.Size = new System.Drawing.Size(100, 22);
             this.PriceTextBox.TabIndex = 4;
-            this.PriceTextBox.TextChanged += new System.EventHandler(this.DPRTextBox_TextChanged);
             // 
             // QuantTextBox
             // 
@@ -126,7 +123,6 @@
             this.QuantTextBox.Name = "QuantTextBox";
             this.QuantTextBox.Size = new System.Drawing.Size(100, 22);
             this.QuantTextBox.TabIndex = 2;
-            this.QuantTextBox.TextChanged += new System.EventHandler(this.priceTextBox_TextChanged);
             // 
             // SymbolTextBox
             // 
@@ -134,7 +130,6 @@
             this.SymbolTextBox.Name = "SymbolTextBox";
             this.SymbolTextBox.Size = new System.Drawing.Size(100, 22);
             this.SymbolTextBox.TabIndex = 6;
-            this.SymbolTextBox.TextChanged += new System.EventHandler(this.symbolTextBox_TextChanged);
             // 
             // ExchangeTextBox
             // 
@@ -142,7 +137,6 @@
             this.ExchangeTextBox.Name = "ExchangeTextBox";
             this.ExchangeTextBox.Size = new System.Drawing.Size(100, 22);
             this.ExchangeTextBox.TabIndex = 7;
-            this.ExchangeTextBox.TextChanged += new System.EventHandler(this.exchangeTextBox_TextChanged);
             // 
             // RTextBox
             // 
@@ -150,7 +144,6 @@
             this.RTextBox.Name = "RTextBox";
             this.RTextBox.Size = new System.Drawing.Size(100, 22);
             this.RTextBox.TabIndex = 8;
-            this.RTextBox.TextChanged += new System.EventHandler(this.RTextBox_TextChanged);
             // 
             // STextBox
             // 
@@ -158,7 +151,6 @@
             this.STextBox.Name = "STextBox";
             this.STextBox.Size = new System.Drawing.Size(100, 22);
             this.STextBox.TabIndex = 9;
-            this.STextBox.TextChanged += new System.EventHandler(this.STextBox_TextChanged);
             // 
             // StopButton
             // 
@@ -201,7 +193,6 @@
             runningDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             runningDataGridView.Size = new System.Drawing.Size(836, 307);
             runningDataGridView.TabIndex = 0;
-            runningDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
             // RunningSymbol
             // 
@@ -305,7 +296,6 @@
             LogTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             LogTextBox.Size = new System.Drawing.Size(1109, 193);
             LogTextBox.TabIndex = 0;
-            LogTextBox.TextChanged += new System.EventHandler(LogTextBox_TextChanged);
             // 
             // label2
             // 
@@ -383,7 +373,6 @@
             this.DPRTextBox.Name = "DPRTextBox";
             this.DPRTextBox.Size = new System.Drawing.Size(100, 22);
             this.DPRTextBox.TabIndex = 3;
-            this.DPRTextBox.TextChanged += new System.EventHandler(this.quantTextBox_TextChanged);
             // 
             // label9
             // 
@@ -407,7 +396,6 @@
             this.StrategyComboBox.Name = "StrategyComboBox";
             this.StrategyComboBox.Size = new System.Drawing.Size(121, 24);
             this.StrategyComboBox.TabIndex = 1;
-            this.StrategyComboBox.SelectedIndexChanged += new System.EventHandler(this.StrategyComboBox_SelectedIndexChanged);
             // 
             // label11
             // 

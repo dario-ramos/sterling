@@ -8,7 +8,7 @@ using System.Collections;
 
 namespace Sterling
 {
-    public partial class Form1 : Form
+    public partial class Form1 : Form, IStrategyManager
     {
         private int quantity;
         private double dpr;
@@ -24,12 +24,22 @@ namespace Sterling
         //private static ConcurrentBag<Task> runningTasks = new ConcurrentBag<Task>();
         private static ArrayList runningTasks = new ArrayList();
         //private static ArrayList cancelTokenSources = new ArrayList();
-        public ArrayList checkRun = new ArrayList();
+        private ArrayList checkRun = new ArrayList();
         private static string account;
 
         public Form1()
         {
             InitializeComponent();
+        }
+
+        public bool StrategyRunning(int strategyIndex)
+        {
+            return (bool)checkRun[strategyIndex];
+        }
+
+        public void SetStrategyRunningStatus(int strategyIndex, bool running)
+        {
+            checkRun[strategyIndex] = running;
         }
 
         private void AppendText(String text)
@@ -221,7 +231,7 @@ namespace Sterling
                     try
                     {
                         mTrade = new TradeExecutor(account, symbol, exchange, strategy, price, quantity, dpr, r, s, this);
-                        mTrade.tradeStopped += OnTradeStopped;
+                        mTrade.TradeStopped += OnTradeStopped;
                         runningStrats.Insert(runningStratsCounter, mTrade);
                         DataGridViewRow row = (DataGridViewRow)runningDataGridView.Rows[0].Clone();
                         row.Visible = true;
@@ -253,6 +263,7 @@ namespace Sterling
             else MessageBox.Show("All the fields are compulsory.");
 
         }
+
     }
 
     [StructLayout(LayoutKind.Sequential)]
