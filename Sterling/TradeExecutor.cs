@@ -102,6 +102,23 @@ namespace Sterling
             private set { }
         }
 
+        public void cancelAllOrders() //<CHG> new method
+        {
+            //Retrieve all open orders for this symbol and account
+            SterlingLib.STIOrderMaint oMaint = new SterlingLib.STIOrderMaint();
+            Array orders = null;
+            var filter = new SterlingLib.structSTIOrderFilter();
+            filter.bOpenOnly = 1;
+            filter.bstrAccount = account;
+            filter.bstrSymbol = symbol;
+            oMaint.GetOrderListEx(ref filter, ref orders);
+            //Cancel all those orders
+            foreach (SterlingLib.structSTIOrderUpdate pendingOrder in orders)
+            {
+                oMaint.CancelOrder(account, pendingOrder.nOrderRecordId, "", "");
+            }
+        }
+
         public void runStrategy(ref DataGridViewRow row, string s, int fPos)
         {
             this.runningRow = row;
@@ -120,7 +137,139 @@ namespace Sterling
             }
         }
 
-        public void runBuyStrategy()
+        public void stopTrade()
+        {
+            if (side == "B")
+            {
+                this.stiClosingOrder.Side = "S";
+                if (stratPosTrack > 0)
+                {
+                    this.stiClosingOrder.Quantity = sellQuantityTracker[stratPosTrack - 1];
+                    int ord = stiClosingOrder.SubmitOrder();
+                    if (ord != 0)
+                    {
+                        MessageBox.Show("Error occurred while trying to Stop the strategy. Order error code- " + ord.ToString());
+                    }
+                }
+
+
+            }
+            else
+            {
+                this.stiClosingOrder.Side = "B";
+                if (stratPosTrack > 0)
+                {
+                    this.stiClosingOrder.Quantity = buyQuantityTracker[stratPosTrack - 1];
+                    int ord = stiClosingOrder.SubmitOrder();
+                    if (ord != 0)
+                    {
+                        MessageBox.Show("Error occurred while trying to Stop the strategy. Order error code- " + ord.ToString());
+                    }
+                }
+
+            }
+        }
+
+        private string calcPnL(double currPrice, string side)
+        {
+            double sellAmt = 0;
+            double buyAmt = 0;
+            if (stratPosTrack > 0)
+            {
+                if (side == "B")
+                {
+                    sellAmt = currPrice * sellQuantityTracker[stratPosTrack - 1];
+                    buyAmt = 0;
+                    for (int i = 0; i < stratPosTrack; i++)
+                    {
+                        buyAmt += buyPrices[i] * buyQuantityTracker[i];
+                    }
+
+                }
+                else
+                {
+                    buyAmt = currPrice * buyQuantityTracker[stratPosTrack - 1];
+                    sellAmt = 0;
+                    for (int i = 0; i < stratPosTrack; i++)
+                    {
+                        sellAmt += sellPrices[i] * sellQuantityTracker[i];
+                    }
+                }
+            }
+            double pnl = sellAmt - buyAmt;
+            pnl = Math.Round(pnl, 2); //<CHG> Was not rounding because argument is passed as a copy
+            return pnl.ToString();
+        }
+
+        private void justUpdate()
+        {
+            try
+            {
+                if (this.side == "B") stiQuote.OnSTIQuoteUpdateXML += new SterlingLib._ISTIQuoteEvents_OnSTIQuoteUpdateXMLEventHandler(OnSTIQuoteUpdateXML_Buy);
+                else stiQuote.OnSTIQuoteUpdateXML += new SterlingLib._ISTIQuoteEvents_OnSTIQuoteUpdateXMLEventHandler(OnSTIQuoteUpdateXML_Sell);
+            }
+            catch
+            {
+                MessageBox.Show("Error occurred while updating LTP and PnL.");
+                System.Windows.Forms.Application.ExitThread();
+            }
+
+        }
+
+        private void OnSTIQuoteUpdateXML_Buy(ref string strQuote)
+        {
+            try
+            {
+                XmlSerializer xs = new XmlSerializer(typeof(SterlingLib.structSTIQuoteUpdate));
+                SterlingLib.structSTIQuoteUpdate structQuote = (SterlingLib.structSTIQuoteUpdate)xs.Deserialize(new StringReader(strQuote));
+
+                if (structQuote.bLastPrice == 1)
+                {
+                    runningRow.Cells[3].Value = structQuote.fLastPrice.ToString();
+                    runningRow.Cells[5].Value = calcPnL(structQuote.fLastPrice, "B");
+                    lastPrice = structQuote.fLastPrice;
+                }
+
+
+            }
+            catch
+            {
+                MessageBox.Show("Error occurred inside OnSTIQuoteUpdateXML_Buy");
+                System.Windows.Forms.Application.ExitThread();
+            }
+
+        }
+
+        private void OnSTIQuoteUpdateXML_Sell(ref string strQuote)
+        {
+            try
+            {
+                XmlSerializer xs = new XmlSerializer(typeof(SterlingLib.structSTIQuoteUpdate));
+                SterlingLib.structSTIQuoteUpdate structQuote = (SterlingLib.structSTIQuoteUpdate)xs.Deserialize(new StringReader(strQuote));
+
+                if (structQuote.bLastPrice == 1)
+                {
+                    runningRow.Cells[3].Value = structQuote.fLastPrice.ToString();
+                    runningRow.Cells[5].Value = calcPnL(structQuote.fLastPrice, "S");
+                    lastPrice = structQuote.fLastPrice;
+                }
+
+
+            }
+            catch
+            {
+                MessageBox.Show("Error occurred inside OnSTIQuoteUpdateXML_Buy");
+                System.Windows.Forms.Application.ExitThread();
+            }
+
+        }
+
+        private void OnTradeStopped(string symbol) //<CHG> Added this method to fire the event
+        {
+            tradeStopped?.Invoke(symbol);
+        }
+
+        private void runBuyStrategy()
         {
 
             double weightedSum;
@@ -390,78 +539,7 @@ namespace Sterling
 
         }
 
-        public void justUpdate()
-        {
-            try
-            {
-                if (this.side == "B") stiQuote.OnSTIQuoteUpdateXML += new SterlingLib._ISTIQuoteEvents_OnSTIQuoteUpdateXMLEventHandler(OnSTIQuoteUpdateXML_Buy);
-                else stiQuote.OnSTIQuoteUpdateXML += new SterlingLib._ISTIQuoteEvents_OnSTIQuoteUpdateXMLEventHandler(OnSTIQuoteUpdateXML_Sell);
-            }
-            catch
-            {
-                MessageBox.Show("Error occurred while updating LTP and PnL.");
-                System.Windows.Forms.Application.ExitThread();
-            }
-
-        }
-
-        public void OnSTIQuoteUpdateXML_Buy(ref string strQuote)
-        {
-            try
-            {
-                XmlSerializer xs = new XmlSerializer(typeof(SterlingLib.structSTIQuoteUpdate));
-                SterlingLib.structSTIQuoteUpdate structQuote = (SterlingLib.structSTIQuoteUpdate)xs.Deserialize(new StringReader(strQuote));
-
-                if (structQuote.bLastPrice == 1)
-                {
-                    runningRow.Cells[3].Value = structQuote.fLastPrice.ToString();
-                    runningRow.Cells[5].Value = calcPnL(structQuote.fLastPrice, "B");
-                    lastPrice = structQuote.fLastPrice;
-                }
-
-
-            }
-            catch
-            {
-                MessageBox.Show("Error occurred inside OnSTIQuoteUpdateXML_Buy");
-                System.Windows.Forms.Application.ExitThread();
-            }
-
-        }
-
-        public string calcPnL(double currPrice, string side)
-        {
-            double sellAmt = 0;
-            double buyAmt = 0;
-            if (stratPosTrack > 0)
-            {
-                if (side == "B")
-                {
-                    sellAmt = currPrice * sellQuantityTracker[stratPosTrack - 1];
-                    buyAmt = 0;
-                    for (int i = 0; i < stratPosTrack; i++)
-                    {
-                        buyAmt += buyPrices[i] * buyQuantityTracker[i];
-                    }
-
-                }
-                else
-                {
-                    buyAmt = currPrice * buyQuantityTracker[stratPosTrack - 1];
-                    sellAmt = 0;
-                    for (int i = 0; i < stratPosTrack; i++)
-                    {
-                        sellAmt += sellPrices[i] * sellQuantityTracker[i];
-                    }
-                }
-            }
-            double pnl = sellAmt - buyAmt;
-            pnl = Math.Round(pnl, 2); //<CHG> Was not rounding because argument is passed as a copy
-            return pnl.ToString();
-
-        }
-
-        public void runSellStrategy()
+        private void runSellStrategy()
         {
 
             double weightedSum;
@@ -739,87 +817,6 @@ namespace Sterling
                 MessageBox.Show("Error occurred while running sell strategy.");
                 System.Windows.Forms.Application.ExitThread();
             }
-
-
-        }
-
-        public void OnSTIQuoteUpdateXML_Sell(ref string strQuote)
-        {
-            try
-            {
-                XmlSerializer xs = new XmlSerializer(typeof(SterlingLib.structSTIQuoteUpdate));
-                SterlingLib.structSTIQuoteUpdate structQuote = (SterlingLib.structSTIQuoteUpdate)xs.Deserialize(new StringReader(strQuote));
-
-                if (structQuote.bLastPrice == 1)
-                {
-                    runningRow.Cells[3].Value = structQuote.fLastPrice.ToString();
-                    runningRow.Cells[5].Value = calcPnL(structQuote.fLastPrice, "S");
-                    lastPrice = structQuote.fLastPrice;
-                }
-
-
-            }
-            catch
-            {
-                MessageBox.Show("Error occurred inside OnSTIQuoteUpdateXML_Buy");
-                System.Windows.Forms.Application.ExitThread();
-            }
-
-        }
-
-        public void stopTrade()
-        {
-            if (side == "B")
-            {
-                this.stiClosingOrder.Side = "S";
-                if (stratPosTrack > 0)
-                {
-                    this.stiClosingOrder.Quantity = sellQuantityTracker[stratPosTrack - 1];
-                    int ord = stiClosingOrder.SubmitOrder();
-                    if (ord != 0)
-                    {
-                        MessageBox.Show("Error occurred while trying to Stop the strategy. Order error code- " + ord.ToString());
-                    }
-                }
-
-
-            }
-            else
-            {
-                this.stiClosingOrder.Side = "B";
-                if (stratPosTrack > 0)
-                {
-                    this.stiClosingOrder.Quantity = buyQuantityTracker[stratPosTrack - 1];
-                    int ord = stiClosingOrder.SubmitOrder();
-                    if (ord != 0)
-                    {
-                        MessageBox.Show("Error occurred while trying to Stop the strategy. Order error code- " + ord.ToString());
-                    }
-                }
-
-            }
-        }
-
-        public void cancelAllOrders() //<CHG> new method
-        {
-            //Retrieve all open orders for this symbol and account
-            SterlingLib.STIOrderMaint oMaint = new SterlingLib.STIOrderMaint();
-            Array orders = null;
-            var filter = new SterlingLib.structSTIOrderFilter();
-            filter.bOpenOnly = 1;
-            filter.bstrAccount = account;
-            filter.bstrSymbol = symbol;
-            oMaint.GetOrderListEx(ref filter, ref orders);
-            //Cancel all those orders
-            foreach(SterlingLib.structSTIOrderUpdate pendingOrder in orders)
-            {
-                oMaint.CancelOrder(account, pendingOrder.nOrderRecordId, "", "");
-            }
-        }
-
-        private void OnTradeStopped(string symbol) //<CHG> Added this method to fire the event
-        {
-            tradeStopped?.Invoke(symbol);
         }
 
     }

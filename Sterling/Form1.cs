@@ -32,54 +32,169 @@ namespace Sterling
             InitializeComponent();
         }
 
+        private void AppendText(String text)
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new Action<string>(AppendText), new object[] { text });
+                return;
+            }
+            LogTextBox.AppendText(text);
+        }
+
+        private void BreakButton_Click(object sender, EventArgs e)
+        {
+
+            if (runningDataGridView.SelectedRows.Count > 0 && runningDataGridView.SelectedRows.Count <= 1)
+            {
+                int selectedIndex = runningDataGridView.CurrentRow.Index;
+
+                if (runningDataGridView.Rows[selectedIndex].Cells[0].Value != null)
+                {
+                    checkRun[selectedIndex] = false;
+                    MessageBox.Show("Order placing for the selected strategy stopped.");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Select one  row.");
+            }
+
+        }
+
+        private void cancelButton_Click(object sender, EventArgs e)
+        {
+            if (runningDataGridView.SelectedRows.Count > 0 && runningDataGridView.SelectedRows.Count <= 1)
+            {
+                int selectedIndex = runningDataGridView.CurrentRow.Index;
+                if (runningDataGridView.Rows[selectedIndex].Cells[0].Value != null)
+                {
+                    checkRun[selectedIndex] = false;
+                    TradeExecutor trade = (TradeExecutor)runningStrats[selectedIndex];
+                    trade.cancelAllOrders();
+                }
+            }
+            else
+            {
+                MessageBox.Show("Select one row.");
+            }
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (MessageBox.Show("Are you sure you want to exit?", "My Application", MessageBoxButtons.YesNo) == DialogResult.No)
+            {
+                // Cancel the Closing event from closing the form.
+                e.Cancel = true;
+
+            }
+
+        }
+
         private void Form1_Load(object sender, EventArgs e)
         {
 
         }
 
-        private void quantTextBox_TextChanged(object sender, EventArgs e)
+        private void OnTradeStopped(string symbol) //<CHG> Added handler for tradeStopped event
         {
-
+            this.BeginInvoke((MethodInvoker)delegate
+            {
+                int symbolRow = -1;
+                foreach (DataGridViewRow row in runningDataGridView.Rows)
+                {
+                    object symbolValue = row.Cells[0].Value;
+                    if (symbolValue != null && symbolValue.ToString().Equals(symbol))
+                    {
+                        symbolRow = row.Index;
+                        stopStrategy(symbolRow);
+                        break;
+                    }
+                }
+            });
         }
 
-        private void DPRTextBox_TextChanged(object sender, EventArgs e)
+        private void stopAllButton_Click(object sender, EventArgs e)
         {
+            for (int i = 0; i < runningDataGridView.Rows.Count - 1; i++)
+            {
+                if (runningDataGridView.Rows[i].Visible)
+                {
+                    int selectedIndex = i;
+                    try
+                    {
+                        checkRun[selectedIndex] = false;
+                    }
+                    catch
+                    {
+                        Console.WriteLine("here");
+                    }
 
+                    TradeExecutor trade = (TradeExecutor)runningStrats[selectedIndex];
+                    trade.stopTrade();
+                    string sym = runningDataGridView.Rows[selectedIndex].Cells[0].Value.ToString();
+                    string pnl = "";
+                    try
+                    {
+                        pnl = runningDataGridView.Rows[selectedIndex].Cells[5].Value.ToString();
+                    }
+                    catch
+                    {
+
+                    }
+
+                    DataGridViewRow row = (DataGridViewRow)stoppedDataGridView.Rows[0].Clone();
+                    row.Cells[0].Value = sym;
+                    row.Cells[1].Value = pnl;
+                    stoppedDataGridView.Rows.Add(row);
+                    runningDataGridView.Rows[selectedIndex].Visible = false;
+
+                }
+            }
+
+            MessageBox.Show("All strategies stopped, all positions closed.");
         }
 
-        private void priceTextBox_TextChanged(object sender, EventArgs e)
+        //<CHG> Separated GUI logic from business logic a bit
+        private void stopButton_Click(object sender, EventArgs e)
         {
-
+            if (runningDataGridView.SelectedRows.Count > 0 && runningDataGridView.SelectedRows.Count <= 1)
+            {
+                int selectedIndex = runningDataGridView.CurrentRow.Index;
+                stopStrategy(selectedIndex);
+            }
+            else
+            {
+                MessageBox.Show("Select one row.");
+            }
         }
 
-        private void symbolTextBox_TextChanged(object sender, EventArgs e)
+        //<CHG> New method
+        private void stopStrategy(int strategyIndex)
         {
+            if (runningDataGridView.Rows[strategyIndex].Cells[0].Value != null)
+            {
+                checkRun[strategyIndex] = false;
+                TradeExecutor trade = (TradeExecutor)runningStrats[strategyIndex];
+                trade.stopTrade();
+                string sym = runningDataGridView.Rows[strategyIndex].Cells[0].Value.ToString();
+                string pnl = "";
+                try
+                {
+                    pnl = runningDataGridView.Rows[strategyIndex].Cells[5].Value.ToString();
+                }
+                catch
+                {
 
-        }
+                }
 
-        private void exchangeTextBox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void RTextBox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void STextBox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void buyRadioButton_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void sellRadioButton_CheckedChanged(object sender, EventArgs e)
-        {
-
+                DataGridViewRow row = (DataGridViewRow)stoppedDataGridView.Rows[0].Clone();
+                row.Cells[0].Value = sym;
+                row.Cells[1].Value = pnl;
+                stoppedDataGridView.Rows.Add(row);
+                runningDataGridView.Rows[strategyIndex].Visible = false;
+                MessageBox.Show("Strategy stopped and position closed for symbol: " + trade.Symbol); //<CHG> Print stopped symbol name
+            }
         }
 
         private void submitButton_Click(object sender, EventArgs e)
@@ -137,186 +252,6 @@ namespace Sterling
             }
             else MessageBox.Show("All the fields are compulsory.");
 
-        }
-
-        private void OnTradeStopped(string symbol) //<CHG> Added handler for tradeStopped event
-        {
-            this.BeginInvoke((MethodInvoker)delegate
-            {
-                int symbolRow = -1;
-                foreach(DataGridViewRow row in runningDataGridView.Rows)
-                {
-                    object symbolValue = row.Cells[0].Value;
-                    if (symbolValue != null && symbolValue.ToString().Equals(symbol))
-                    {
-                        symbolRow = row.Index;
-                        stopStrategy(symbolRow);
-                        break;
-                    }
-                }
-            });
-        }
-
-        //<CHG> Separated GUI logic from business logic a bit
-        private void stopButton_Click(object sender, EventArgs e)
-        {
-            if (runningDataGridView.SelectedRows.Count > 0 && runningDataGridView.SelectedRows.Count <= 1)
-            {
-                int selectedIndex = runningDataGridView.CurrentRow.Index;
-                stopStrategy(selectedIndex);
-            }
-            else
-            {
-                MessageBox.Show("Select one row.");
-            }
-        }
-
-        //<CHG> New method
-        private void stopStrategy(int strategyIndex)
-        {
-            if (runningDataGridView.Rows[strategyIndex].Cells[0].Value != null)
-            {
-                checkRun[strategyIndex] = false;
-                TradeExecutor trade = (TradeExecutor)runningStrats[strategyIndex];
-                trade.stopTrade();
-                string sym = runningDataGridView.Rows[strategyIndex].Cells[0].Value.ToString();
-                string pnl = "";
-                try
-                {
-                    pnl = runningDataGridView.Rows[strategyIndex].Cells[5].Value.ToString();
-                }
-                catch
-                {
-
-                }
-
-                DataGridViewRow row = (DataGridViewRow)stoppedDataGridView.Rows[0].Clone();
-                row.Cells[0].Value = sym;
-                row.Cells[1].Value = pnl;
-                stoppedDataGridView.Rows.Add(row);
-                runningDataGridView.Rows[strategyIndex].Visible = false;
-                MessageBox.Show("Strategy stopped and position closed for symbol: " + trade.Symbol); //<CHG> Print stopped symbol name
-            }
-        }
-
-        private void stopAllButton_Click(object sender, EventArgs e)
-        {
-            for (int i = 0; i < runningDataGridView.Rows.Count - 1; i++)
-            {
-                if (runningDataGridView.Rows[i].Visible)
-                {
-                    int selectedIndex = i;
-                    try
-                    {
-                        checkRun[selectedIndex] = false;
-                    }
-                    catch
-                    {
-                        Console.WriteLine("here");
-                    }
-
-                    TradeExecutor trade = (TradeExecutor)runningStrats[selectedIndex];
-                    trade.stopTrade();
-                    string sym = runningDataGridView.Rows[selectedIndex].Cells[0].Value.ToString();
-                    string pnl = "";
-                    try
-                    {
-                        pnl = runningDataGridView.Rows[selectedIndex].Cells[5].Value.ToString();
-                    }
-                    catch
-                    {
-
-                    }
-
-                    DataGridViewRow row = (DataGridViewRow)stoppedDataGridView.Rows[0].Clone();
-                    row.Cells[0].Value = sym;
-                    row.Cells[1].Value = pnl;
-                    stoppedDataGridView.Rows.Add(row);
-                    runningDataGridView.Rows[selectedIndex].Visible = false;
-
-                }
-            }
-
-            MessageBox.Show("All strategies stopped, all positions closed.");
-        }
-
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
-        private void LogTextBox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void StrategyComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void AccountTextBox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        public void AppendText(String text)
-        {
-            if (this.InvokeRequired)
-            {
-                this.Invoke(new Action<string>(AppendText), new object[] { text });
-                return;
-            }
-            LogTextBox.AppendText(text);
-        }
-
-        private void BreakButton_Click(object sender, EventArgs e)
-        {
-
-            if (runningDataGridView.SelectedRows.Count > 0 && runningDataGridView.SelectedRows.Count <= 1)
-            {
-                int selectedIndex = runningDataGridView.CurrentRow.Index;
-
-                if (runningDataGridView.Rows[selectedIndex].Cells[0].Value != null)
-                {
-                    checkRun[selectedIndex] = false;
-                    MessageBox.Show("Order placing for the selected strategy stopped.");
-                }
-            }
-            else
-            {
-                MessageBox.Show("Select one  row.");
-            }
-
-        }
-
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (MessageBox.Show("Are you sure you want to exit?", "My Application", MessageBoxButtons.YesNo) == DialogResult.No)
-            {
-                // Cancel the Closing event from closing the form.
-                e.Cancel = true;
-
-            }
-
-        }
-
-        private void cancelButton_Click(object sender, EventArgs e)
-        {
-            if (runningDataGridView.SelectedRows.Count > 0 && runningDataGridView.SelectedRows.Count <= 1)
-            {
-                int selectedIndex = runningDataGridView.CurrentRow.Index;
-                if (runningDataGridView.Rows[selectedIndex].Cells[0].Value != null)
-                {
-                    checkRun[selectedIndex] = false;
-                    TradeExecutor trade = (TradeExecutor)runningStrats[selectedIndex];
-                    trade.cancelAllOrders();
-                }
-            }
-            else
-            {
-                MessageBox.Show("Select one row.");
-            }
         }
     }
 
