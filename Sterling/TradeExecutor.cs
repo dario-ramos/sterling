@@ -800,7 +800,7 @@ namespace Sterling
                                     if (lastPrice >= buyPrices[counter - 1])
                                     {
                                         strategyManager.SetStrategyRunningStatus(strategyIndex, false);
-                                        MessageBox.Show("The sell price for this strategy is above the stop price. No more orders will be placed for this strategy.");
+                                        MessageBox.Show("The sell price for this strategy is above the stop price. No more orders will be placed for this strategy. Symbol: " + symbol);
                                     }
                                 }
                                 else
@@ -808,7 +808,7 @@ namespace Sterling
                                     if (lastPrice >= buyPrices[counter])
                                     {
                                         strategyManager.SetStrategyRunningStatus(strategyIndex, false);
-                                        MessageBox.Show("The sell price for this strategy is above the stop price. No more orders will be placed for this strategy.");
+                                        MessageBox.Show("The sell price for this strategy is above the stop price. No more orders will be placed for this strategy. Symbol: " + symbol);
                                     }
                                 }
                             }
