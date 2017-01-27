@@ -30,6 +30,7 @@ namespace Sterling
         private SterlingLib.STIOrder stiLimitOrder;
         private SterlingLib.STIOrder stiStopOrder;
         private SterlingLib.STIOrder stiClosingOrder;
+        private SterlingLib.STIPosition stiPosition;
         private SterlingLib.STIQuote stiQuote;
         private SterlingLib.STIApp stiApp;
 
@@ -62,6 +63,7 @@ namespace Sterling
                 this.stiLimitOrder = new SterlingLib.STIOrder();
                 this.stiStopOrder = new SterlingLib.STIOrder();
                 this.stiClosingOrder = new SterlingLib.STIOrder();
+                this.stiPosition = new SterlingLib.STIPosition();
                 this.stiQuote = new SterlingLib.STIQuote();
                 this.stiApp = new SterlingLib.STIApp();
                 this.stiApp.SetModeXML(true);
@@ -69,16 +71,16 @@ namespace Sterling
                 this.stiQuote.RegisterQuote(symbol, "");
 
                 this.stiLimitOrder.Tif = "D";
-                this.stiLimitOrder.Destination = "NSDQ";
+                this.stiLimitOrder.Destination = exchange;
                 this.stiLimitOrder.Account = account;
                 this.stiLimitOrder.Symbol = symbol;
                 this.stiLimitOrder.PriceType = SterlingLib.STIPriceTypes.ptSTILmt;
                 this.stiStopOrder.Tif = "D";
-                this.stiStopOrder.Destination = "NSDQ";
+                this.stiStopOrder.Destination = exchange;
                 this.stiStopOrder.Account = account;
                 this.stiStopOrder.Symbol = symbol;
                 this.stiClosingOrder.Tif = "D";
-                this.stiClosingOrder.Destination = "NSDQ";
+                this.stiClosingOrder.Destination = exchange;
                 this.stiClosingOrder.Account = account;
                 this.stiClosingOrder.Symbol = symbol;
                 this.stiClosingOrder.PriceType = SterlingLib.STIPriceTypes.ptSTIMkt;
@@ -144,31 +146,20 @@ namespace Sterling
             if (side == "B")
             {
                 this.stiClosingOrder.Side = "S";
-                if (stratPosTrack > 0)
-                {
-                    this.stiClosingOrder.Quantity = sellQuantityTracker[stratPosTrack - 1];
-                    int ord = stiClosingOrder.SubmitOrder();
-                    if (ord != 0)
-                    {
-                        MessageBox.Show("Error occurred while trying to Stop the strategy. Order error code- " + ord.ToString());
-                    }
-                }
-
-
             }
             else
             {
                 this.stiClosingOrder.Side = "B";
-                if (stratPosTrack > 0)
+            }
+            if (stratPosTrack > 0)
+            {
+                SterlingLib.structSTIPositionUpdate positionUpdate = this.stiPosition.GetPositionInfoStruct(symbol, "", account);
+                stiClosingOrder.Quantity = Math.Abs(positionUpdate.nOpeningPosition + positionUpdate.nSharesBot - positionUpdate.nSharesSld);
+                int ord = stiClosingOrder.SubmitOrder();
+                if (ord != 0)
                 {
-                    this.stiClosingOrder.Quantity = buyQuantityTracker[stratPosTrack - 1];
-                    int ord = stiClosingOrder.SubmitOrder();
-                    if (ord != 0)
-                    {
-                        MessageBox.Show("Error occurred while trying to Stop the strategy. Order error code- " + ord.ToString());
-                    }
+                    MessageBox.Show("Error occurred while trying to Stop the strategy. Order error code- " + ord.ToString());
                 }
-
             }
         }
 

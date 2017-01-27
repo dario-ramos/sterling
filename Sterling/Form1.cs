@@ -117,6 +117,7 @@ namespace Sterling
             ExchangeTextBox.Text = Properties.Settings.Default.Exchange;
             RTextBox.Text = Properties.Settings.Default.REntry;
             STextBox.Text = Properties.Settings.Default.SQty;
+            acctTextBox.Text = Properties.Settings.Default.Account;
         }
 
         private void OnTradeStopped(string symbol) //<CHG> Added handler for tradeStopped event
@@ -148,6 +149,7 @@ namespace Sterling
             Properties.Settings.Default.Exchange = ExchangeTextBox.Text;
             Properties.Settings.Default.REntry = RTextBox.Text;
             Properties.Settings.Default.SQty = STextBox.Text;
+            Properties.Settings.Default.Account = acctTextBox.Text;
             Properties.Settings.Default.Save();
         }
 
