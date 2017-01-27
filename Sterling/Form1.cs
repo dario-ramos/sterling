@@ -103,7 +103,20 @@ namespace Sterling
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            LoadSettings();
+        }
 
+        private void LoadSettings()
+        {
+            StrategyComboBox.Text = Properties.Settings.Default.Strategy;
+            QuantTextBox.Text = Properties.Settings.Default.Quantity;
+            DPRTextBox.Text = Properties.Settings.Default.DPR;
+            PriceTextBox.Text = Properties.Settings.Default.Price;
+            NTextBox.Text = Properties.Settings.Default.N;
+            SymbolTextBox.Text = Properties.Settings.Default.Symbol;
+            ExchangeTextBox.Text = Properties.Settings.Default.Exchange;
+            RTextBox.Text = Properties.Settings.Default.REntry;
+            STextBox.Text = Properties.Settings.Default.SQty;
         }
 
         private void OnTradeStopped(string symbol) //<CHG> Added handler for tradeStopped event
@@ -122,6 +135,20 @@ namespace Sterling
                     }
                 }
             });
+        }
+
+        private void SaveSettings()
+        {
+            Properties.Settings.Default.Strategy = StrategyComboBox.Text;
+            Properties.Settings.Default.Quantity = QuantTextBox.Text;
+            Properties.Settings.Default.DPR = DPRTextBox.Text;
+            Properties.Settings.Default.Price = PriceTextBox.Text;
+            Properties.Settings.Default.N = NTextBox.Text;
+            Properties.Settings.Default.Symbol = SymbolTextBox.Text;
+            Properties.Settings.Default.Exchange = ExchangeTextBox.Text;
+            Properties.Settings.Default.REntry = RTextBox.Text;
+            Properties.Settings.Default.SQty = STextBox.Text;
+            Properties.Settings.Default.Save();
         }
 
         private void StopAllButton_Click(object sender, EventArgs e)
@@ -251,6 +278,7 @@ namespace Sterling
                         runningTasks.Insert(runningStratsCounter, worker);
 
                         worker.Start();
+                        SaveSettings();
                     }
                     catch
                     {
