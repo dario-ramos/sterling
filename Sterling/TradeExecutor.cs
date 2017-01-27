@@ -559,15 +559,7 @@ namespace Sterling
                                     OnLogMessage("Stop @ " + sellPrices[counter - 1].ToString() +
                                         ", Quantity- " + sellQuantityTracker[counter - 1].ToString() + ", Symbol- " + symbol +
                                         ", Error code- " + ord4.ToString() + "\n");
-                                    if (ord4 != 0) //<CHG> Added call to fire trade stopped event
-                                    {
-                                        stopFailed = true;
-                                    }
-                                    else
-                                    {
-                                        stopFailed = false;
-                                        OnTradeStopped(symbol);
-                                    }
+                                    stopFailed = (ord4 != 0);
                                 }
                                 catch
                                 {
@@ -584,6 +576,7 @@ namespace Sterling
                                     {
                                         strategyManager.SetStrategyRunningStatus(strategyIndex, false);
                                         MessageBox.Show("The buy price for this strategy fell below the stop price. No more orders will be placed for this strategy.");
+                                        OnTradeStopped(symbol);
                                     }
                                 }
                                 else
@@ -592,6 +585,7 @@ namespace Sterling
                                     {
                                         strategyManager.SetStrategyRunningStatus(strategyIndex, false);
                                         MessageBox.Show("The buy price for this strategy fell below the stop price. No more orders will be placed for this strategy.");
+                                        OnTradeStopped(symbol);
                                     }
                                 }
                             }
@@ -613,8 +607,7 @@ namespace Sterling
                                 OnLogMessage("Stop @ " + sellPrices[counter - 1].ToString() +
                                     ", Quantity- " + sellQuantityTracker[counter - 1].ToString() + ", Symbol- " + symbol +
                                     ", Error code- " + ord4.ToString() + "\n");
-                                if (ord4 != 0) stopFailed = true;
-                                else stopFailed = false;
+                                stopFailed = (ord4 != 0);
                             }
                             catch
                             {
@@ -709,8 +702,7 @@ namespace Sterling
                                     OnLogMessage("Stop @ " + buyPrices[counter].ToString() +
                                         ", Quantity- " + buyQuantityTracker[counter].ToString() + ", Symbol- " + symbol +
                                         ", Error code- " + ord3.ToString() + "\n");
-                                    if (ord3 != 0) stopFailed = true;
-                                    else stopFailed = false;
+                                    stopFailed = (ord3 != 0);
 
                                 }
                                 catch
@@ -738,15 +730,7 @@ namespace Sterling
                                     OnLogMessage("Stop @ " + buyPrices[counter - 1].ToString() +
                                         ", Quantity- " + buyQuantityTracker[counter - 1].ToString() + ", Symbol- " + symbol +
                                         ", Error code- " + ord4.ToString() + "\n");
-                                    if (ord4 != 0) //<CHG> Fire tradeStopped event
-                                    {
-                                        stopFailed = true;
-                                    }
-                                    else
-                                    {
-                                        OnTradeStopped(symbol);
-                                        stopFailed = false;
-                                    }
+                                    stopFailed = (ord4 != 0);
                                 }
                                 catch
                                 {
@@ -763,6 +747,7 @@ namespace Sterling
                                     {
                                         strategyManager.SetStrategyRunningStatus(strategyIndex, false);
                                         MessageBox.Show("The sell price for this strategy is above the stop price. No more orders will be placed for this strategy. Symbol: " + symbol);
+                                        OnTradeStopped(symbol);
                                     }
                                 }
                                 else
@@ -771,10 +756,10 @@ namespace Sterling
                                     {
                                         strategyManager.SetStrategyRunningStatus(strategyIndex, false);
                                         MessageBox.Show("The sell price for this strategy is above the stop price. No more orders will be placed for this strategy. Symbol: " + symbol);
+                                        OnTradeStopped(symbol);
                                     }
                                 }
                             }
-
 
                         }
 
