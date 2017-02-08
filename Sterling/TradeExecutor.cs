@@ -6,12 +6,12 @@ using System.Xml.Serialization;
 
 namespace Sterling
 {
-    //<CHG> Moved this class to a separate file (it was inside Form1.cs)
     public class TradeExecutor
     {
         public event Action<string> LogMessage; //<CHG> Added this event to log messages without a reference to the form
         public event Action<string> TradeStopped; //<CHG> Added this event to notify that trade stopped
 
+        private bool _running;
         private string account;
         private string exchange;
         private string symbol;
@@ -26,7 +26,6 @@ namespace Sterling
         private int[] buyQuantityTracker;
         private int[] sellQuantityTracker;
         private int n = 1000;
-        private IStrategyManager strategyManager;
         private SterlingLib.STIOrder stiLimitOrder;
         private SterlingLib.STIOrder stiStopOrder;
         private SterlingLib.STIOrder stiClosingOrder;
@@ -43,7 +42,7 @@ namespace Sterling
         private int strategyIndex;
         private bool stopFailed = false;
 
-        public TradeExecutor(string acct, string sym, string ex, string strat, double p, int quant, double DPR, double R, int S, IStrategyManager strategyManager)
+        public TradeExecutor(string acct, string sym, string ex, string strat, double p, int quant, double DPR, double R, int S)
         {
             try
             {
@@ -87,7 +86,6 @@ namespace Sterling
                 //this.stiStopOrder.PriceType = SterlingLib.STIPriceTypes.ptSTISvrStp;
                 this.stopOrderID = null;
                 this.stratPosTrack = 0;
-                this.strategyManager = strategyManager;
             }
             catch
             {
@@ -95,6 +93,18 @@ namespace Sterling
                 System.Windows.Forms.Application.ExitThread();
             }
 
+        }
+
+        public bool Running
+        {
+            get
+            {
+                return _running;
+            }
+            set
+            {
+                _running = value;
+            }
         }
 
         public string Symbol
@@ -465,7 +475,7 @@ namespace Sterling
 
                 while (true)
                 {
-                    if (strategyManager.StrategyRunning(strategyIndex))
+                    if (_running)
                     {
                         if (lastPrice >= buyPrices[counter])
                         {
@@ -565,7 +575,7 @@ namespace Sterling
                                 {
                                     if (lastPrice <= sellPrices[counter - 1])
                                     {
-                                        strategyManager.SetStrategyRunningStatus(strategyIndex, false);
+                                        _running = false;
                                         MessageBox.Show("The buy price for this strategy fell below the stop price. No more orders will be placed for this strategy.");
                                         OnTradeStopped(symbol);
                                     }
@@ -574,7 +584,7 @@ namespace Sterling
                                 {
                                     if (lastPrice <= sellPrices[counter])
                                     {
-                                        strategyManager.SetStrategyRunningStatus(strategyIndex, false);
+                                        _running = false;
                                         MessageBox.Show("The buy price for this strategy fell below the stop price. No more orders will be placed for this strategy.");
                                         OnTradeStopped(symbol);
                                     }
@@ -635,7 +645,7 @@ namespace Sterling
 
                 while (true)
                 {
-                    if ( strategyManager.StrategyRunning(strategyIndex))
+                    if (_running)
                     {
                         if (lastPrice <= sellPrices[counter])
                         {

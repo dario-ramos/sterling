@@ -8,9 +8,10 @@ using System.Collections;
 
 namespace Sterling
 {
-    public partial class MainForm : Form, IStrategyManager
+    public partial class MainForm : Form, ISterlingView
     {
-        private int quantity;
+        private SterlingPresenter _presenter;
+        /*private int quantity;
         private double dpr;
         private double price;
         private double r;
@@ -20,26 +21,12 @@ namespace Sterling
         private string symbol;
         private string exchange;
         private static int runningStratsCounter = -1;
-        private static ArrayList runningStrats = new ArrayList();
-        //private static ConcurrentBag<Task> runningTasks = new ConcurrentBag<Task>();
         private static ArrayList runningTasks = new ArrayList();
-        //private static ArrayList cancelTokenSources = new ArrayList();
-        private ArrayList checkRun = new ArrayList();
-        private static string account;
+        private static string account;*/
 
         public MainForm()
         {
             InitializeComponent();
-        }
-
-        public bool StrategyRunning(int strategyIndex)
-        {
-            return (bool)checkRun[strategyIndex];
-        }
-
-        public void SetStrategyRunningStatus(int strategyIndex, bool running)
-        {
-            checkRun[strategyIndex] = running;
         }
 
         private void OnLogMessage(String text)
@@ -58,16 +45,17 @@ namespace Sterling
             if (runningDataGridView.SelectedRows.Count > 0 && runningDataGridView.SelectedRows.Count <= 1)
             {
                 int selectedIndex = runningDataGridView.CurrentRow.Index;
+                string symbol = (string) runningDataGridView.Rows[selectedIndex].Cells[0].Value;
 
-                if (runningDataGridView.Rows[selectedIndex].Cells[0].Value != null)
+                if (!string.IsNullOrWhiteSpace(symbol))
                 {
-                    checkRun[selectedIndex] = false;
+                    _presenter.StopStrategy(symbol);
                     MessageBox.Show("Order placing for the selected strategy stopped.");
                 }
             }
             else
             {
-                MessageBox.Show("Select one  row.");
+                MessageBox.Show("Select one row.");
             }
 
         }
@@ -77,11 +65,10 @@ namespace Sterling
             if (runningDataGridView.SelectedRows.Count > 0 && runningDataGridView.SelectedRows.Count <= 1)
             {
                 int selectedIndex = runningDataGridView.CurrentRow.Index;
-                if (runningDataGridView.Rows[selectedIndex].Cells[0].Value != null)
+                string symbol = (string) runningDataGridView.Rows[selectedIndex].Cells["Symbol"].Value;
+                if (!string.IsNullOrWhiteSpace(symbol))
                 {
-                    checkRun[selectedIndex] = false;
-                    TradeExecutor trade = (TradeExecutor)runningStrats[selectedIndex];
-                    trade.CancelAllOrders();
+                    _presenter.CancelAllOrders(symbol);
                 }
             }
             else
@@ -162,6 +149,7 @@ namespace Sterling
                     int selectedIndex = i;
                     try
                     {
+                        string symbol = 
                         checkRun[selectedIndex] = false;
                     }
                     catch
