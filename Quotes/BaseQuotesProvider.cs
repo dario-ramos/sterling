@@ -24,6 +24,8 @@ namespace Quotes
             _symbols = new HashSet<string>();
         }
 
+        public abstract string ProviderName{ get; }
+
         public bool RegisterSymbol(string symbol)
         {
             lock (_symbolsLock)

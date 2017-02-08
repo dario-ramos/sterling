@@ -17,6 +17,8 @@ namespace Quotes
 
         bool UnregisterSymbol(string symbol);
 
+        string ProviderName { get; }
+
         void StartGettingQuotes();
 
         void StopGettingQuotes();

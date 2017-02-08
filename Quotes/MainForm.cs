@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace Quotes
@@ -141,7 +142,9 @@ namespace Quotes
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            lblVersion.Text = lblVersion.Text.Replace("N/A", Assembly.GetExecutingAssembly().GetName().Version.ToString());
             _quotesPresenter = new QuotesPresenter(this);
+            lblProvider.Text = lblProvider.Text.Replace("N/A", _quotesPresenter.ProviderName);
             _rowsBySymbol = new Dictionary<string, int>();
             _quotesPresenter.StartGettingQuotes();
         }

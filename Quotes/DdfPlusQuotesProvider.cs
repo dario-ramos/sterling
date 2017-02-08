@@ -40,6 +40,14 @@ namespace Quotes
             _client.Symbols = symbolList;
         }
 
+        public override string ProviderName
+        {
+            get
+            {
+                return "DdfPlus";
+            }
+        }
+
         protected override void GetQuotes()
         {
             lock (_quotesLock)
@@ -69,7 +77,7 @@ namespace Quotes
                 Session session = quote.Sessions["combined"];
                 Quote newQuote = new Quote
                 {
-                    LastPrice = session.Last,
+                    LastPrice = double.Parse(ddfplus.Quote.FormatValue(session.Last, NumericFormat.Default, quote.Unitcode)),
                     Timestamp = session.Timestamp.ToString()
                 };
                 _quotes[quote.Symbol] = newQuote;

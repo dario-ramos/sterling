@@ -16,10 +16,12 @@ namespace Quotes
             _quotesProvider = new DdfPlusQuotesProvider();
         }
 
-        ~QuotesModel()
+        public string ProviderName
         {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-            Dispose(false);
+            get
+            {
+                return _quotesProvider.ProviderName;
+            }
         }
 
         public bool RegisterSymbol(string symbol)
@@ -32,7 +34,6 @@ namespace Quotes
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);
-             GC.SuppressFinalize(this);
         }
 
         public void StartGettingQuotes()

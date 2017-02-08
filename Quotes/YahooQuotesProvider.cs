@@ -22,6 +22,14 @@ namespace Quotes
         {
         }
 
+        public override string ProviderName
+        {
+            get
+            {
+                return "Yahoo";
+            }
+        }
+
         private void HandleResponse(WebResponse response)
         {
             using (Stream responseStream = response.GetResponseStream())

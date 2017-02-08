@@ -15,6 +15,14 @@ namespace Quotes
             _model = new QuotesModel();
         }
 
+        public string ProviderName
+        {
+            get
+            {
+                return _model.ProviderName;
+            }
+        }
+
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.

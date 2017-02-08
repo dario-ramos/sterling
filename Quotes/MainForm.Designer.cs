@@ -29,8 +29,6 @@
         private void InitializeComponent()
         {
             this.dgvSymbols = new System.Windows.Forms.DataGridView();
-            this.Symbol = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Quote = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.txtNewSymbol = new System.Windows.Forms.TextBox();
             this.btnRegisterSymbol = new System.Windows.Forms.Button();
             this.gbNewSymbol = new System.Windows.Forms.GroupBox();
@@ -39,6 +37,10 @@
             this.gbStopSymbols = new System.Windows.Forms.GroupBox();
             this.lblQuoteRefreshRate = new System.Windows.Forms.Label();
             this.rtbLog = new System.Windows.Forms.RichTextBox();
+            this.lblVersion = new System.Windows.Forms.Label();
+            this.lblProvider = new System.Windows.Forms.Label();
+            this.Symbol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Quote = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Time = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSymbols)).BeginInit();
             this.gbNewSymbol.SuspendLayout();
@@ -56,16 +58,6 @@
             this.dgvSymbols.Name = "dgvSymbols";
             this.dgvSymbols.Size = new System.Drawing.Size(401, 475);
             this.dgvSymbols.TabIndex = 0;
-            // 
-            // Symbol
-            // 
-            this.Symbol.HeaderText = "Symbol";
-            this.Symbol.Name = "Symbol";
-            // 
-            // Quote
-            // 
-            this.Quote.HeaderText = "Quote";
-            this.Quote.Name = "Quote";
             // 
             // txtNewSymbol
             // 
@@ -145,16 +137,47 @@
             this.rtbLog.TabIndex = 9;
             this.rtbLog.Text = "";
             // 
+            // lblVersion
+            // 
+            this.lblVersion.AutoSize = true;
+            this.lblVersion.Location = new System.Drawing.Point(12, 566);
+            this.lblVersion.Name = "lblVersion";
+            this.lblVersion.Size = new System.Drawing.Size(68, 13);
+            this.lblVersion.TabIndex = 12;
+            this.lblVersion.Text = "Version: N/A";
+            // 
+            // lblProvider
+            // 
+            this.lblProvider.AutoSize = true;
+            this.lblProvider.Location = new System.Drawing.Point(177, 566);
+            this.lblProvider.Name = "lblProvider";
+            this.lblProvider.Size = new System.Drawing.Size(72, 13);
+            this.lblProvider.TabIndex = 13;
+            this.lblProvider.Text = "Provider: N/A";
+            // 
+            // Symbol
+            // 
+            this.Symbol.HeaderText = "Symbol";
+            this.Symbol.Name = "Symbol";
+            // 
+            // Quote
+            // 
+            this.Quote.HeaderText = "Quote";
+            this.Quote.Name = "Quote";
+            // 
             // Time
             // 
             this.Time.HeaderText = "Time";
             this.Time.Name = "Time";
+            this.Time.Width = 140;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(685, 591);
+            this.Controls.Add(this.lblProvider);
+            this.Controls.Add(this.lblVersion);
             this.Controls.Add(this.rtbLog);
             this.Controls.Add(this.lblQuoteRefreshRate);
             this.Controls.Add(this.gbStopSymbols);
@@ -182,10 +205,12 @@
         private System.Windows.Forms.Button btnStopSymbol;
         private System.Windows.Forms.Button btnStopAllSymbols;
         private System.Windows.Forms.GroupBox gbStopSymbols;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Symbol;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Quote;
         private System.Windows.Forms.Label lblQuoteRefreshRate;
         private System.Windows.Forms.RichTextBox rtbLog;
+        private System.Windows.Forms.Label lblVersion;
+        private System.Windows.Forms.Label lblProvider;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Symbol;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Quote;
         private System.Windows.Forms.DataGridViewTextBoxColumn Time;
     }
 }
