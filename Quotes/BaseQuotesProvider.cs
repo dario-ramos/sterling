@@ -35,7 +35,7 @@ namespace Quotes
                     return false;
                 }
                 _symbols.Add(symbol);
-                ExtraSymbolRegistration(symbol);
+                CustomSymbolRegistration(symbol);
             }
             return true;
         }
@@ -49,14 +49,16 @@ namespace Quotes
                     return false;
                 }
                 _symbols.Remove(symbol);
+                CustomSymbolUnregistration(symbol);
             }
             return true;
         }
 
-        public virtual void ExtraSymbolRegistration(string symbol)
-        {
+        public virtual void CustomSymbolRegistration(string symbol){}
 
-        }
+        public virtual void CustomSymbolUnregistration(string symbol){}
+
+        public virtual void CustomUnregisterAllSymbols(){}
 
         public void StartGettingQuotes()
         {
@@ -77,6 +79,7 @@ namespace Quotes
             lock (_symbolsLock)
             {
                 _symbols.Clear();
+                CustomUnregisterAllSymbols();
             }
         }
 

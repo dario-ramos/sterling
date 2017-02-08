@@ -9,7 +9,6 @@ namespace Quotes
 {
     public partial class MainForm : Form, IQuotesView
     {
-        private Dictionary<string, int> _rowsBySymbol = null;
         private QuotesPresenter _quotesPresenter = null;
         private Stopwatch _sw = null;
         private int _quotesUpdates;
@@ -62,14 +61,13 @@ namespace Quotes
         {
             BeginInvoke((MethodInvoker)delegate
             {
-                if (_rowsBySymbol.ContainsKey(symbol))
+                if (FindRow(symbol) != null)
                 {
                     DisplayErrorMessage("Symbol " + symbol + " already registered");
                 }
                 else
                 {
                     dgvSymbols.Rows.Add(symbol, "");
-                    _rowsBySymbol.Add(symbol, dgvSymbols.Rows.Count - 2); //Count header
                 }
             });
         }
@@ -79,7 +77,6 @@ namespace Quotes
             BeginInvoke((MethodInvoker)delegate
             {
                 dgvSymbols.Rows.Clear();
-                _rowsBySymbol.Clear();
             });
         }
 
@@ -87,14 +84,14 @@ namespace Quotes
         {
             BeginInvoke((MethodInvoker)delegate
             {
-                if (!_rowsBySymbol.ContainsKey(symbol))
+                DataGridViewRow row = FindRow(symbol);
+                if (row == null)
                 {
                     DisplayErrorMessage("Symbol " + symbol + " not registered");
                 }
                 else
                 {
-                    dgvSymbols.Rows.RemoveAt(_rowsBySymbol[symbol]);
-                    _rowsBySymbol.Remove(symbol);
+                    dgvSymbols.Rows.Remove(row);
                 }
             });
         }
@@ -105,8 +102,12 @@ namespace Quotes
             {
                 foreach (KeyValuePair<string, Quote> quote in quotes)
                 {
-                    dgvSymbols.Rows[_rowsBySymbol[quote.Key]].Cells[1].Value = quote.Value.LastPrice;
-                    dgvSymbols.Rows[_rowsBySymbol[quote.Key]].Cells[2].Value = quote.Value.Timestamp;
+                    DataGridViewRow rowToUpdate = FindRow(quote.Key);
+                    if (rowToUpdate != null)
+                    {
+                        rowToUpdate.Cells[1].Value = quote.Value.LastPrice;
+                        rowToUpdate.Cells[2].Value = quote.Value.Timestamp;
+                    }
                 }
                 _quotesUpdates++;
                 if(_sw.ElapsedMilliseconds > 1000)
@@ -117,6 +118,21 @@ namespace Quotes
                     _sw.Restart();
                 }
             });
+        }
+
+        private DataGridViewRow FindRow(string symbol)
+        {
+            DataGridViewRow symbolRow = null;
+            // Look for existing symbol in list
+            foreach (DataGridViewRow row in dgvSymbols.Rows)
+            {
+                if ((string)row.Cells["Symbol"].Value == symbol)
+                {
+                    symbolRow = row;
+                    break;
+                }
+            }
+            return symbolRow;
         }
 
         private void btnRegisterSymbol_Click(object sender, EventArgs e)
@@ -145,7 +161,6 @@ namespace Quotes
             lblVersion.Text = lblVersion.Text.Replace("N/A", Assembly.GetExecutingAssembly().GetName().Version.ToString());
             _quotesPresenter = new QuotesPresenter(this);
             lblProvider.Text = lblProvider.Text.Replace("N/A", _quotesPresenter.ProviderName);
-            _rowsBySymbol = new Dictionary<string, int>();
             _quotesPresenter.StartGettingQuotes();
         }
 

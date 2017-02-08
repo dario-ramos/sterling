@@ -29,7 +29,7 @@ namespace Quotes
             UpdateConnectionSettings();
         }
 
-        public override void ExtraSymbolRegistration(string symbol)
+        public override void CustomSymbolRegistration(string symbol)
         {
             string symbolList = "";
             foreach(string s in Symbols)
@@ -38,6 +38,33 @@ namespace Quotes
             }
             symbolList = symbolList.Substring(0, symbolList.Length - 1);
             _client.Symbols = symbolList;
+        }
+
+        public override void CustomSymbolUnregistration(string symbol)
+        {
+            string symbolList = "";
+            foreach (string s in Symbols)
+            {
+                symbolList += s + "=Ss,";
+            }
+            if (!string.IsNullOrEmpty(symbolList))
+            {
+                symbolList = symbolList.Substring(0, symbolList.Length - 1);
+            }
+            _client.Symbols = symbolList;
+            lock (_quotesLock)
+            {
+                _quotes.Remove(symbol);
+            }
+        }
+
+        public override void CustomUnregisterAllSymbols()
+        {
+            _client.Symbols = "";
+            lock (_quotesLock)
+            {
+                _quotes.Clear();
+            }
         }
 
         public override string ProviderName
@@ -52,7 +79,7 @@ namespace Quotes
         {
             lock (_quotesLock)
             {
-                ExtraSymbolRegistration("");
+                CustomSymbolRegistration("");
                 OnQuotesUpdate(_quotes);
             }
         }
