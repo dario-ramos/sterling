@@ -3,8 +3,9 @@ using System.Collections.Generic;
 
 namespace Quotes
 {
-    internal class QuotesPresenter
+    internal class QuotesPresenter : IDisposable
     {
+        private bool disposedValue = false; // To detect redundant calls
         private IQuotesView _view = null;
         private QuotesModel _model = null;
 
@@ -12,6 +13,12 @@ namespace Quotes
         {
             _view = view;
             _model = new QuotesModel();
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
         }
 
         public void RegisterNewSymbol(string symbol)
@@ -70,7 +77,20 @@ namespace Quotes
             }
         }
 
-        private void OnQuotesUpdate(Dictionary<string,double> quotes)
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects).
+                    _model.Dispose();
+                }
+                disposedValue = true;
+            }
+        }
+
+        private void OnQuotesUpdate(Dictionary<string, Quote> quotes)
         {
             _view.UpdateQuotes(quotes);
         }

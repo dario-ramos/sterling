@@ -17,7 +17,7 @@ namespace Quotes
 
         void UnregisterSymbol(string symbol);
 
-        void UpdateQuotes(Dictionary<string, double> quotes);
+        void UpdateQuotes(Dictionary<string, Quote> quotes);
 
     }
 }

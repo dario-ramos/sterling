@@ -9,11 +9,11 @@ namespace Quotes
         private Client _client;
         private const string USER = "ajain";
         private const string PASS = "devtest";
-        private Dictionary<string, double> _quotes;
+        private Dictionary<string, Quote> _quotes;
         private object _quotesLock;
 
         public DdfPlusQuotesProvider(){
-            _quotes = new Dictionary<string, double>();
+            _quotes = new Dictionary<string, Quote>();
             _quotesLock = new object();
 
             // The streaming version must be set prior to creating any clients expected to work for that version
@@ -49,13 +49,30 @@ namespace Quotes
             }
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                //Release managed resources and call Dispose for member variables
+                _client.Symbols = "";
+                Connection.Close();
+            }
+            //Release unmanaged resources
+            base.Dispose(disposing);
+        }
+
         private void OnNewQuote(object sender, Client.NewQuoteEventArgs e)
         {
             lock (_quotesLock)
             {
-                Quote quote = e.Quote;
+                ddfplus.Quote quote = e.Quote;
                 Session session = quote.Sessions["combined"];
-                _quotes[quote.Symbol] = session.Last;
+                Quote newQuote = new Quote
+                {
+                    LastPrice = session.Last,
+                    Timestamp = session.Timestamp.ToString()
+                };
+                _quotes[quote.Symbol] = newQuote;
             }
         }
 
@@ -68,5 +85,6 @@ namespace Quotes
             Connection.Server = "";
             Connection.Port = 0;
         }
+
     }
 }

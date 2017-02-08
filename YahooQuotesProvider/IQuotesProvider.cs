@@ -3,9 +3,15 @@ using System.Collections.Generic;
 
 namespace Quotes
 {
-    internal interface IQuotesProvider
+    public struct Quote
     {
-        event Action<Dictionary<string, double>> QuotesUpdate;
+        public double LastPrice;
+        public string Timestamp;
+    }
+
+    internal interface IQuotesProvider : IDisposable
+    {
+        event Action<Dictionary<string, Quote>> QuotesUpdate;
 
         bool RegisterSymbol(string symbol);
 

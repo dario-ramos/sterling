@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -7,7 +8,7 @@ namespace Quotes
 {
     internal abstract class BaseQuotesProvider : IQuotesProvider
     {
-        public event Action<Dictionary<string, double>> QuotesUpdate;
+        public event Action<Dictionary<string, Quote>> QuotesUpdate;
 
         private bool _gettingQuotes;
         private const int QUOTE_THREAD_SLEEP = 500;
@@ -87,7 +88,11 @@ namespace Quotes
             }
         }
 
-        protected void OnQuotesUpdate(Dictionary<string, double> quotes)
+        protected virtual void Dispose(bool disposing)
+        {
+        }
+
+        protected void OnQuotesUpdate(Dictionary<string, Quote> quotes)
         {
             QuotesUpdate?.Invoke(quotes);
         }
@@ -124,7 +129,12 @@ namespace Quotes
                 }
                 Thread.Sleep(QUOTE_THREAD_SLEEP);
             }
+            Debug.WriteLine("QUOTES THREAD EXITED"); //TODO <DBG>
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+        }
     }
 }

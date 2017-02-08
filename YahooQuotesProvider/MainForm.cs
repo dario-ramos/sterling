@@ -98,13 +98,14 @@ namespace Quotes
             });
         }
 
-        public void UpdateQuotes(Dictionary<string, double> quotes)
+        public void UpdateQuotes(Dictionary<string, Quote> quotes)
         {
             BeginInvoke((MethodInvoker)delegate
             {
-                foreach (KeyValuePair<string, double> quote in quotes)
+                foreach (KeyValuePair<string, Quote> quote in quotes)
                 {
-                    dgvSymbols.Rows[_rowsBySymbol[quote.Key]].Cells[1].Value = quote.Value;
+                    dgvSymbols.Rows[_rowsBySymbol[quote.Key]].Cells[1].Value = quote.Value.LastPrice;
+                    dgvSymbols.Rows[_rowsBySymbol[quote.Key]].Cells[2].Value = quote.Value.Timestamp;
                 }
                 _quotesUpdates++;
                 if(_sw.ElapsedMilliseconds > 1000)
@@ -135,6 +136,7 @@ namespace Quotes
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             _quotesPresenter.StopGettingQuotes();
+            _quotesPresenter.Dispose();
         }
 
         private void MainForm_Load(object sender, EventArgs e)

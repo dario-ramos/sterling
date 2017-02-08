@@ -3,20 +3,36 @@ using System.Collections.Generic;
 
 namespace Quotes
 {
-    internal class QuotesModel
+    internal class QuotesModel : IDisposable
     {
-        public event Action<Dictionary<string, double>> QuotesUpdate;
+        public event Action<Dictionary<string, Quote>> QuotesUpdate;
 
+        private bool _disposedValue; // To detect redundant calls
         private IQuotesProvider _quotesProvider;
 
         public QuotesModel()
         {
+            _disposedValue = false;
             _quotesProvider = new DdfPlusQuotesProvider();
+        }
+
+        ~QuotesModel()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(false);
         }
 
         public bool RegisterSymbol(string symbol)
         {
             return _quotesProvider.RegisterSymbol(symbol);
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+             GC.SuppressFinalize(this);
         }
 
         public void StartGettingQuotes()
@@ -41,10 +57,27 @@ namespace Quotes
             _quotesProvider.UnregisterAllSymbols();
         }
 
-        private void OnQuotesUpdate(Dictionary<string, double> quotes)
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects).
+                    _quotesProvider.Dispose();
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+                // TODO: set large fields to null.
+                _disposedValue = true;
+            }
+        }
+
+        private void OnQuotesUpdate(Dictionary<string, Quote> quotes)
         {
             QuotesUpdate?.Invoke(quotes);
         }
+
 
     }
 }

@@ -29,12 +29,12 @@ namespace Quotes
             {
                 JavaScriptSerializer js = new JavaScriptSerializer();
                 dynamic obj = js.Deserialize<dynamic>(sr.ReadToEnd());
-                var quotes = new Dictionary<string, double>();
+                var quotes = new Dictionary<string, Quote>();
                 if( obj["query"]["results"]["quote"] is object[] )
                 {
                     foreach (dynamic quote in obj["query"]["results"]["quote"])
                     {
-                        quotes.Add(quote["symbol"], double.Parse(quote["LastTradePriceOnly"]));
+                        quotes.Add(quote["symbol"], new Quotes.Quote { LastPrice = double.Parse(quote["LastTradePriceOnly"]) });
                     }
                 }else
                 {
