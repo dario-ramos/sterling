@@ -11,7 +11,7 @@ namespace Quotes
 
         public QuotesModel()
         {
-            _quotesProvider = new YahooQuotesProvider();
+            _quotesProvider = new DdfPlusQuotesProvider();
         }
 
         public bool RegisterSymbol(string symbol)

@@ -39,6 +39,7 @@
             this.gbStopSymbols = new System.Windows.Forms.GroupBox();
             this.lblQuoteRefreshRate = new System.Windows.Forms.Label();
             this.rtbLog = new System.Windows.Forms.RichTextBox();
+            this.Time = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSymbols)).BeginInit();
             this.gbNewSymbol.SuspendLayout();
             this.gbStopSymbols.SuspendLayout();
@@ -49,10 +50,11 @@
             this.dgvSymbols.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvSymbols.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Symbol,
-            this.Quote});
+            this.Quote,
+            this.Time});
             this.dgvSymbols.Location = new System.Drawing.Point(12, 72);
             this.dgvSymbols.Name = "dgvSymbols";
-            this.dgvSymbols.Size = new System.Drawing.Size(286, 475);
+            this.dgvSymbols.Size = new System.Drawing.Size(401, 475);
             this.dgvSymbols.TabIndex = 0;
             // 
             // Symbol
@@ -136,18 +138,23 @@
             // 
             // rtbLog
             // 
-            this.rtbLog.Location = new System.Drawing.Point(304, 72);
+            this.rtbLog.Location = new System.Drawing.Point(419, 72);
             this.rtbLog.Name = "rtbLog";
             this.rtbLog.ReadOnly = true;
             this.rtbLog.Size = new System.Drawing.Size(254, 475);
             this.rtbLog.TabIndex = 9;
             this.rtbLog.Text = "";
             // 
+            // Time
+            // 
+            this.Time.HeaderText = "Time";
+            this.Time.Name = "Time";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(570, 591);
+            this.ClientSize = new System.Drawing.Size(685, 591);
             this.Controls.Add(this.rtbLog);
             this.Controls.Add(this.lblQuoteRefreshRate);
             this.Controls.Add(this.gbStopSymbols);
@@ -179,6 +186,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Quote;
         private System.Windows.Forms.Label lblQuoteRefreshRate;
         private System.Windows.Forms.RichTextBox rtbLog;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Time;
     }
 }
 

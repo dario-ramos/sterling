@@ -10,90 +10,16 @@ using System.Web.Script.Serialization;
 
 namespace Quotes
 {
-    internal class YahooQuotesProvider : IQuotesProvider
+    internal class YahooQuotesProvider : BaseQuotesProvider
     {
-        private bool _gettingQuotes;
-        private const int QUOTE_THREAD_SLEEP = 10;
         private const int REQUEST_TIMEOUT = 20000;
         private const string CONTENT_TYPE = "application/json;charset=utf-8";
         private const string SYMBOLS_PLACEHOLDER = "###SYMBOLS_PLACEHOLDER###";
         private const string SYMBOLS_REQUEST_SEPARATOR = ",";
         private const string REQUEST_URI = "https://query.yahooapis.com/v1/public/yql?q=select%20symbol%2CLastTradePriceOnly%20from%20yahoo.finance.quote%20where%20symbol%20in%20(" + SYMBOLS_PLACEHOLDER + ")&format=json&diagnostics=false&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=";
-        private HashSet<string> _symbols;
-        private object _gettingQuotesLock;
-        private object _symbolsLock;
-
-        public event Action<Dictionary<string, double>> QuotesUpdate;
 
         public YahooQuotesProvider()
         {
-            _gettingQuotesLock = new object();
-            GettingQuotes = false;
-            _symbolsLock = new object();
-            _symbols = new HashSet<string>();
-        }
-
-        public bool RegisterSymbol(string symbol)
-        {
-            if (_symbols.Contains(symbol))
-            {
-                return false;
-            }
-            lock (_symbolsLock)
-            {
-                _symbols.Add(symbol);
-            }
-            return true;
-        }
-
-        public bool UnregisterSymbol(string symbol)
-        {
-            if (!_symbols.Contains(symbol))
-            {
-                return false;
-            }
-            lock (_symbolsLock)
-            {
-                _symbols.Remove(symbol);
-            }
-            return true;
-        }
-
-        public void StartGettingQuotes()
-        {
-            if (GettingQuotes)
-            {
-                return;
-            }
-            Task.Factory.StartNew( ()=> { QuotesThread(); } );
-        }
-
-        public void StopGettingQuotes()
-        {
-            GettingQuotes = false;
-        }
-
-        public void UnregisterAllSymbols()
-        {
-            _symbols.Clear();
-        }
-
-        private bool GettingQuotes
-        {
-            get
-            {
-                lock (_gettingQuotesLock)
-                {
-                    return _gettingQuotes;
-                }
-            }
-            set
-            {
-                lock (_gettingQuotesLock)
-                {
-                    _gettingQuotes = value;
-                }
-            }
         }
 
         private void HandleResponse(WebResponse response)
@@ -134,31 +60,16 @@ namespace Quotes
             return task.ContinueWith(t => responseHandler(t.Result));
         }
 
-        private void OnQuotesUpdate(Dictionary<string, double> quotes)
+        protected override void GetQuotes()
         {
-            QuotesUpdate?.Invoke(quotes);
+            string symbolString = "";
+            foreach (string symbol in Symbols)
+            {
+                symbolString += "%22" + symbol + "%22" + "%2C";
+            }
+            symbolString = symbolString.Substring(0, symbolString.Length - 3); //Remove last comma
+            MakeAsyncHttpRequest(REQUEST_URI.Replace(SYMBOLS_PLACEHOLDER, symbolString), CONTENT_TYPE, HandleResponse);
         }
 
-        private void QuotesThread()
-        {
-            GettingQuotes = true;
-            while (GettingQuotes)
-            {
-                lock (_symbolsLock)
-                {
-                    if(_symbols.Count > 0)
-                    {
-                        string symbolString = "";
-                        foreach(string symbol in _symbols)
-                        {
-                            symbolString += "%22" + symbol + "%22" + "%2C";
-                        }
-                        symbolString = symbolString.Substring(0, symbolString.Length - 3); //Remove last comma
-                        MakeAsyncHttpRequest(REQUEST_URI.Replace(SYMBOLS_PLACEHOLDER, symbolString), CONTENT_TYPE, HandleResponse);
-                    }
-                }
-                Thread.Sleep(QUOTE_THREAD_SLEEP);
-            }
-        }
     }
 }

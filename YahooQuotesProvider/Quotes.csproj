@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ddfplus">
+      <HintPath>..\ExternalLibs\ddfplus\ddfplus.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web.Extensions" />
@@ -47,6 +50,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseQuotesProvider.cs" />
+    <Compile Include="DdfPlusQuotesProvider.cs" />
     <Compile Include="IQuotesProvider.cs" />
     <Compile Include="IQuotesView.cs" />
     <Compile Include="MainForm.cs">
