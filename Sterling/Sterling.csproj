@@ -62,7 +62,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SterlingModel.cs" />
     <Compile Include="SterlingPresenter.cs" />
-    <Compile Include="TradeExecutor.cs" />
+    <Compile Include="Strategy.cs" />
+    <Compile Include="StrategyExecutor.cs" />
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -84,6 +88,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Quotes\Quotes.csproj">
+      <Project>{f8346640-6d33-4079-b0e0-99fa4e089245}</Project>
+      <Name>Quotes</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

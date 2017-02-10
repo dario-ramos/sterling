@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Quotes
 {
-    internal class DdfPlusQuotesProvider : BaseQuotesProvider
+    public class DdfPlusQuotesProvider : BaseQuotesProvider
     {
         private Client _client;
         private const string USER = "ajain";

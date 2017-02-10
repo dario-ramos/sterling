@@ -10,7 +10,7 @@ using System.Web.Script.Serialization;
 
 namespace Quotes
 {
-    internal class YahooQuotesProvider : BaseQuotesProvider
+    public class YahooQuotesProvider : BaseQuotesProvider
     {
         private const int REQUEST_TIMEOUT = 20000;
         private const string CONTENT_TYPE = "application/json;charset=utf-8";

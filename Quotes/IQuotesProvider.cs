@@ -9,7 +9,7 @@ namespace Quotes
         public string Timestamp;
     }
 
-    internal interface IQuotesProvider : IDisposable
+    public interface IQuotesProvider : IDisposable
     {
         event Action<Dictionary<string, Quote>> QuotesUpdate;
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Quotes
 {
-    internal abstract class BaseQuotesProvider : IQuotesProvider
+    public abstract class BaseQuotesProvider : IQuotesProvider
     {
         public event Action<Dictionary<string, Quote>> QuotesUpdate;
 
