@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Sterling
 {
-    internal class SterlingPresenter
+    internal class SterlingPresenter : IDisposable
     {
         private ISterlingView _view;
         private SterlingModel _model;
@@ -42,6 +42,11 @@ namespace Sterling
             _model.CancelAllOrders(strategy);
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
         public void StartStrategy(Strategy strategy)
         {
             _model.StartStrategy(strategy);
@@ -55,6 +60,18 @@ namespace Sterling
         public void StopTrade(Strategy strategy)
         {
             _model.StopTrade(strategy);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    _model.Dispose();
+                }
+                disposedValue = true;
+            }
         }
 
         private void OnLogMessage(string msg)
@@ -82,5 +99,8 @@ namespace Sterling
         {
             _view.UpdateTradeStats(strategy, buyPrice, quantity, sellPrice);
         }
+
+        private bool disposedValue = false; // To detect redundant calls
+
     }
 }

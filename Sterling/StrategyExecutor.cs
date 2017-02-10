@@ -25,6 +25,8 @@ namespace Sterling
         private int _stratPosTrack;
         private int[] _buyQuantityTracker;
         private int[] _sellQuantityTracker;
+        private object _lastPriceLock;
+        private object _runningLock;
         private SterlingLib.STIApp _stiApp;
         private SterlingLib.STIOrder _stiClosingOrder;
         private SterlingLib.STIOrder _stiLimitOrder;
@@ -34,7 +36,7 @@ namespace Sterling
         private string _account;
         private string _exchange;
         private string _stopOrderID;
-        private bool _stopFailed = false;
+        private bool _stopFailed;
 
         public StrategyExecutor(Strategy strat, string acct, string ex,
                                 double p, int quant, double DPR,
@@ -78,6 +80,10 @@ namespace Sterling
                 //this.stiStopOrder.PriceType = SterlingLib.STIPriceTypes.ptSTISvrStp;
                 _stopOrderID = null;
                 _stratPosTrack = 0;
+                _stopFailed = false;
+                _runningLock = new object();
+                _lastPriceLock = new object();
+                Running = false;
             }
             catch
             {
@@ -90,11 +96,34 @@ namespace Sterling
         {
             get
             {
-                return _running;
+                lock (_runningLock)
+                {
+                    return _running;
+                }
             }
             set
             {
-                _running = value;
+                lock (_runningLock)
+                {
+                    _running = value;
+                }
+            }
+        }
+
+        public double LastPrice
+        {
+            get{
+                lock (_lastPriceLock)
+                {
+                    return _lastPrice;
+                }
+            }
+            set
+            {
+                lock (_lastPriceLock)
+                {
+                    _lastPrice = value;
+                }
             }
         }
 
@@ -156,21 +185,17 @@ namespace Sterling
 
         public void RunStrategy()
         {
+            Running = true;
             if (_strategy.Side == Side.Buy)
             {
-                _lastPrice = 0;
+                LastPrice = 0;
                 RunBuyStrategy();
             }
             else
             {
-                _lastPrice = 100000;
+                LastPrice = 100000;
                 RunSellStrategy();
             }
-        }
-
-        public void SetLastPrice(double lastPrice)
-        {
-            _lastPrice = lastPrice;
         }
 
         public void StartTrade()
@@ -417,9 +442,9 @@ namespace Sterling
 
                 while (true)
                 {
-                    if (_running)
+                    if (Running)
                     {
-                        if (_lastPrice >= _buyPrices[counter])
+                        if (LastPrice >= _buyPrices[counter])
                         {
                             _stiLimitOrder.Quantity = _buyQuantityTracker[counter];
                             _stiLimitOrder.LmtPrice = _buyPrices[counter];
@@ -433,7 +458,7 @@ namespace Sterling
                             catch
                             {
                                 OnErrorMessage("Error while placing limit buy order.", false);
-                                _running = false;
+                                Running = false;
                             }
 
                             OnUpdateTradeStats(_strategy, _buyPrices[counter], _sellQuantityTracker[counter], _sellPrices[counter]);
@@ -460,7 +485,7 @@ namespace Sterling
                                 catch
                                 {
                                     OnErrorMessage("Error while placing stop sell order.", false);
-                                    _running = false;
+                                    Running = false;
                                 }
                             }
                             else
@@ -478,7 +503,7 @@ namespace Sterling
                                 catch
                                 {
                                     OnErrorMessage("Error while placing stop sell order.", false);
-                                    _running = false;
+                                    Running = false;
                                 }
 
                             }
@@ -505,26 +530,26 @@ namespace Sterling
                                 catch
                                 {
                                     OnErrorMessage("Error while placing stop sell order.", false);
-                                    _running = false;
+                                    Running = false;
                                 }
                             }
 
-                            if (_lastPrice != 0)
+                            if (LastPrice != 0)
                             {
                                 if (counter > 0)
                                 {
-                                    if (_lastPrice <= _sellPrices[counter - 1])
+                                    if (LastPrice <= _sellPrices[counter - 1])
                                     {
-                                        _running = false;
+                                        Running = false;
                                         OnLogMessage("The buy price for this strategy fell below the stop price. No more orders will be placed for this strategy.");
                                         OnTradeStopped(_strategy);
                                     }
                                 }
                                 else
                                 {
-                                    if (_lastPrice <= _sellPrices[counter])
+                                    if (LastPrice <= _sellPrices[counter])
                                     {
-                                        _running = false;
+                                        Running = false;
                                         OnLogMessage("The buy price for this strategy fell below the stop price. No more orders will be placed for this strategy.");
                                         OnTradeStopped(_strategy);
                                     }
@@ -553,7 +578,7 @@ namespace Sterling
                             catch
                             {
                                 OnErrorMessage("Error while placing stop sell order.", false);
-                                _running = false;
+                                Running = false;
                             }
                             break;
                         }
@@ -583,9 +608,9 @@ namespace Sterling
 
                 while (true)
                 {
-                    if (_running)
+                    if (Running)
                     {
-                        if (_lastPrice <= _sellPrices[counter])
+                        if (LastPrice <= _sellPrices[counter])
                         {
                             _stiLimitOrder.Quantity = _sellQuantityTracker[counter];
                             _stiLimitOrder.LmtPrice = _sellPrices[counter];
@@ -600,7 +625,7 @@ namespace Sterling
                             catch
                             {
                                 OnErrorMessage("Error occurred while placing limit sell order.", false);
-                                _running = false;
+                                Running = false;
                             }
 
                             OnUpdateTradeStats(_strategy, _sellPrices[counter], _buyQuantityTracker[counter],
@@ -626,7 +651,7 @@ namespace Sterling
                                 catch
                                 {
                                     OnErrorMessage("Error occurred while placing stop buy order.", false);
-                                    _running = false;
+                                    Running = false;
                                 }
 
                             }
@@ -645,7 +670,7 @@ namespace Sterling
                                 catch
                                 {
                                     OnErrorMessage("Error occurred while placing stop buy order.", false);
-                                    _running = false;
+                                    Running = false;
                                 }
 
                             }
@@ -672,26 +697,26 @@ namespace Sterling
                                 catch
                                 {
                                     OnErrorMessage("Error while placing stop buy order.", false);
-                                    _running = false;
+                                    Running = false;
                                 }
                             }
 
-                            if (_lastPrice != 100000)
+                            if (LastPrice != 100000)
                             {
                                 if (counter > 0)
                                 {
-                                    if (_lastPrice >= _buyPrices[counter - 1])
+                                    if (LastPrice >= _buyPrices[counter - 1])
                                     {
-                                        _running = false;
+                                        Running = false;
                                         OnLogMessage("The sell price for this strategy is above the stop price. No more orders will be placed for this strategy. Symbol: " + _strategy.Symbol);
                                         OnTradeStopped(_strategy);
                                     }
                                 }
                                 else
                                 {
-                                    if (_lastPrice >= _buyPrices[counter])
+                                    if (LastPrice >= _buyPrices[counter])
                                     {
-                                        _running = false;
+                                        Running = false;
                                         OnLogMessage("The sell price for this strategy is above the stop price. No more orders will be placed for this strategy. Symbol: " + _strategy.Symbol);
                                         OnTradeStopped(_strategy);
                                     }
@@ -719,7 +744,7 @@ namespace Sterling
                             catch
                             {
                                 OnErrorMessage("Error while placing stop buy order.", false);
-                                _running = false;
+                                Running = false;
                             }
                         }
                     }
@@ -729,7 +754,7 @@ namespace Sterling
             catch
             {
                 OnErrorMessage("Error occurred while running sell strategy.", false);
-                _running = false;
+                Running = false;
             }
         }
 

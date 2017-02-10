@@ -9,7 +9,12 @@ namespace Sterling
     public partial class MainForm : Form, ISterlingView
     {
         private bool _forcedClose = false;
+        private const string LTP_COLUMN_NAME = "LTP";
+        private const string PRICE_COLUMN_NAME = "Price";
+        private const string PRICE_LIMIT_COLUMN_NAME = "PL";
+        private const string QUANTITY_COLUMN_NAME = "Quantity";
         private const string SIDE_COLUMN_NAME = "Side";
+        private const string SL_COLUMN_NAME = "SL";
         private const string STRATEGY_COLUMN_NAME = "Strategy";
         private const string SYMBOL_COLUMN_NAME = "Symbol";
         private SterlingPresenter _presenter;
@@ -56,16 +61,13 @@ namespace Sterling
                 string pnl = "";
                 try
                 {
-                    pnl = stoppedStrategyRow.Cells["RunningPL"].Value.ToString();
+                    pnl = stoppedStrategyRow.Cells[PRICE_LIMIT_COLUMN_NAME].Value.ToString();
                 }
                 catch (Exception ex)
                 {
                     LogMessage(ex.Message);
                 }
-                DataGridViewRow row = (DataGridViewRow)stoppedDataGridView.Rows[0].Clone();
-                row.Cells[SYMBOL_COLUMN_NAME].Value = strategy.Symbol;
-                row.Cells[1].Value = pnl;
-                stoppedDataGridView.Rows.Add(row);
+                stoppedDataGridView.Rows.Add(strategy.Symbol, pnl);
                 _dgvStrategies.Rows.Remove(stoppedStrategyRow);
                 ShowMessage("Strategy " + strategy.Name + " stopped and position closed for symbol: " + strategy.Symbol, false);
             });
@@ -80,9 +82,9 @@ namespace Sterling
                     string symbol = (string) row.Cells[SYMBOL_COLUMN_NAME].Value;
                     if(symbol != null && quotes.ContainsKey(symbol))
                     {
-                        row.Cells["LTP"].Value = quotes[symbol].LastPrice;
+                        row.Cells[LTP_COLUMN_NAME].Value = quotes[symbol].LastPrice;
                         Strategy strategy = GetStrategyFromRow(row);
-                        row.Cells["PL"].Value = _presenter.CalculatePl(strategy, quotes[symbol].LastPrice);
+                        row.Cells[PRICE_LIMIT_COLUMN_NAME].Value = _presenter.CalculatePl(strategy, quotes[symbol].LastPrice);
                     }
                 }
             });
@@ -93,9 +95,12 @@ namespace Sterling
             BeginInvoke((MethodInvoker)delegate
             {
                 DataGridViewRow row = FindRow(strategy);
-                row.Cells["Price"].Value = buyPrice.ToString();
-                row.Cells["Quantity"].Value = quantity.ToString();
-                row.Cells["SL"].Value = sellPrice.ToString();
+                if (row != null)
+                {
+                    row.Cells[PRICE_COLUMN_NAME].Value = buyPrice.ToString();
+                    row.Cells[QUANTITY_COLUMN_NAME].Value = quantity.ToString();
+                    row.Cells[SL_COLUMN_NAME].Value = sellPrice.ToString();
+                }
             });
         }
 
@@ -216,12 +221,16 @@ namespace Sterling
         {
             if (_forcedClose)
             {
+                _presenter.Dispose();
                 return;
             }
             if (MessageBox.Show("Are you sure you want to exit?", "My Application", MessageBoxButtons.YesNo) == DialogResult.No)
             {
                 // Cancel the Closing event from closing the form.
                 e.Cancel = true;
+            }else
+            {
+                _presenter.Dispose();
             }
         }
 
@@ -248,35 +257,32 @@ namespace Sterling
 
         private void StopAllButton_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < _dgvStrategies.Rows.Count - 1; i++)
+            foreach(DataGridViewRow row in _dgvStrategies.Rows)
             {
-                if (_dgvStrategies.Rows[i].Visible)
+                if (row.Visible)
                 {
-                    int selectedIndex = i;
-                    Strategy strategy = GetStrategyFromRow(_dgvStrategies.Rows[i]);
-                    _presenter.StopStrategy(strategy);
-                    _presenter.StopTrade(strategy);
-                    string pnl = "";
-                    try
+                    Strategy strategy = GetStrategyFromRow(row);
+                    if (strategy != null)
                     {
-                        pnl = _dgvStrategies.Rows[selectedIndex].Cells[5].Value.ToString();
+                        _presenter.StopStrategy(strategy);
+                        _presenter.StopTrade(strategy);
+                        string pnl = "";
+                        try
+                        {
+                            pnl = row.Cells[PRICE_LIMIT_COLUMN_NAME].Value.ToString();
+                        }
+                        catch (Exception ex)
+                        {
+                            LogMessage("ERROR: " + ex);
+                        }
+                        stoppedDataGridView.Rows.Add(strategy.Symbol, pnl);
                     }
-                    catch
-                    {
-                        //TODO Log error message
-                    }
-                    DataGridViewRow row = (DataGridViewRow)stoppedDataGridView.Rows[0].Clone();
-                    row.Cells[SYMBOL_COLUMN_NAME].Value = strategy.Symbol;
-                    row.Cells[1].Value = pnl;
-                    stoppedDataGridView.Rows.Add(row);
-                    _dgvStrategies.Rows.RemoveAt(selectedIndex);
                 }
             }
-
+            _dgvStrategies.Rows.Clear();
             ShowMessage("All strategies stopped, all positions closed.", false);
         }
 
-        //<CHG> Separated GUI logic from business logic a bit
         private void StopButton_Click(object sender, EventArgs e)
         {
             if (_dgvStrategies.SelectedRows.Count > 0 && _dgvStrategies.SelectedRows.Count <= 1)
@@ -303,20 +309,22 @@ namespace Sterling
             try
             {
                 Strategy newStrategy = new Strategy(side, StrategyComboBox.Text, SymbolTextBox.Text);
-                _presenter.AddStrategy
+                bool strategyAdded = _presenter.AddStrategy
                 (
                     newStrategy, ExchangeTextBox.Text, acctTextBox.Text,
                     dpr, N, price,
                     r, s
                 );
-                DataGridViewRow row = (DataGridViewRow)_dgvStrategies.Rows[0].Clone();
-                row.Visible = true;
-                row.Cells[SYMBOL_COLUMN_NAME].Value = newStrategy.Symbol;
-                row.Cells[SIDE_COLUMN_NAME].Value = newStrategy.Side.ToString();
-                row.Cells[STRATEGY_COLUMN_NAME].Value = newStrategy.Name;
-                _dgvStrategies.Rows.Add(row);
-                _presenter.StartStrategy(newStrategy);
-                SaveSettings();
+                if (strategyAdded)
+                {
+                    _dgvStrategies.Rows.Add
+                    (
+                        newStrategy.Symbol, newStrategy.Name, newStrategy.Side.ToString(),
+                        "", "", "", "", ""
+                    );
+                    _presenter.StartStrategy(newStrategy);
+                    SaveSettings();
+                }
             }
             catch
             {

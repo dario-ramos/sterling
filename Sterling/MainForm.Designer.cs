@@ -40,15 +40,9 @@
             this.StopButton = new System.Windows.Forms.Button();
             this.StopAllButton = new System.Windows.Forms.Button();
             this._dgvStrategies = new System.Windows.Forms.DataGridView();
-            this.RunningSymbol = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Strategy = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Side = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Price = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Quantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.LTP = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SL = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PL = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.stoppedDataGridView = new System.Windows.Forms.DataGridView();
+            this.StoppedSymbol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.StoppedPL = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.StoppedPrice = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.StoppedQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.StoppedLTP = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -71,8 +65,14 @@
             this.acctTextBox = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
             this.cancelButton = new System.Windows.Forms.Button();
-            this.StoppedSymbol = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.StoppedPL = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Symbol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Strategy = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Side = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Price = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Quantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.LTP = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SL = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PL = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this._dgvStrategies)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.stoppedDataGridView)).BeginInit();
             this.SuspendLayout();
@@ -192,7 +192,7 @@
             this._dgvStrategies.AllowUserToDeleteRows = false;
             this._dgvStrategies.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this._dgvStrategies.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.RunningSymbol,
+            this.Symbol,
             this.Strategy,
             this.Side,
             this.Price,
@@ -209,62 +209,6 @@
             this._dgvStrategies.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this._dgvStrategies.Size = new System.Drawing.Size(628, 249);
             this._dgvStrategies.TabIndex = 0;
-            // 
-            // RunningSymbol
-            // 
-            this.RunningSymbol.HeaderText = "Symbol";
-            this.RunningSymbol.Name = "RunningSymbol";
-            this.RunningSymbol.ReadOnly = true;
-            this.RunningSymbol.Width = 60;
-            // 
-            // Strategy
-            // 
-            this.Strategy.HeaderText = "Strategy";
-            this.Strategy.Name = "Strategy";
-            this.Strategy.ReadOnly = true;
-            this.Strategy.Width = 60;
-            // 
-            // Side
-            // 
-            this.Side.HeaderText = "Side";
-            this.Side.Name = "Side";
-            this.Side.ReadOnly = true;
-            this.Side.Width = 60;
-            // 
-            // Price
-            // 
-            this.Price.HeaderText = "Price";
-            this.Price.Name = "Price";
-            this.Price.ReadOnly = true;
-            this.Price.Width = 80;
-            // 
-            // Quantity
-            // 
-            this.Quantity.HeaderText = "Quantity";
-            this.Quantity.Name = "Quantity";
-            this.Quantity.ReadOnly = true;
-            this.Quantity.Width = 80;
-            // 
-            // LTP
-            // 
-            this.LTP.HeaderText = "LTP";
-            this.LTP.Name = "LTP";
-            this.LTP.ReadOnly = true;
-            this.LTP.Width = 80;
-            // 
-            // SL
-            // 
-            this.SL.HeaderText = "SL";
-            this.SL.Name = "SL";
-            this.SL.ReadOnly = true;
-            this.SL.Width = 80;
-            // 
-            // PL
-            // 
-            this.PL.HeaderText = "PL";
-            this.PL.Name = "PL";
-            this.PL.ReadOnly = true;
-            this.PL.Width = 80;
             // 
             // stoppedDataGridView
             // 
@@ -283,6 +227,20 @@
             this.stoppedDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.stoppedDataGridView.Size = new System.Drawing.Size(146, 249);
             this.stoppedDataGridView.TabIndex = 0;
+            // 
+            // StoppedSymbol
+            // 
+            this.StoppedSymbol.HeaderText = "Symbol";
+            this.StoppedSymbol.Name = "StoppedSymbol";
+            this.StoppedSymbol.ReadOnly = true;
+            this.StoppedSymbol.Width = 60;
+            // 
+            // StoppedPL
+            // 
+            this.StoppedPL.HeaderText = "PL";
+            this.StoppedPL.Name = "StoppedPL";
+            this.StoppedPL.ReadOnly = true;
+            this.StoppedPL.Width = 80;
             // 
             // StoppedPrice
             // 
@@ -481,7 +439,7 @@
             this.acctTextBox.Location = new System.Drawing.Point(997, 437);
             this.acctTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.acctTextBox.Name = "acctTextBox";
-            this.acctTextBox.Size = new System.Drawing.Size(76, 20);
+            this.acctTextBox.Size = new System.Drawing.Size(88, 20);
             this.acctTextBox.TabIndex = 34;
             // 
             // label12
@@ -507,25 +465,67 @@
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
-            // StoppedSymbol
+            // Symbol
             // 
-            this.StoppedSymbol.HeaderText = "Symbol";
-            this.StoppedSymbol.Name = "StoppedSymbol";
-            this.StoppedSymbol.ReadOnly = true;
-            this.StoppedSymbol.Width = 60;
+            this.Symbol.HeaderText = "Symbol";
+            this.Symbol.Name = "Symbol";
+            this.Symbol.ReadOnly = true;
+            this.Symbol.Width = 60;
             // 
-            // StoppedPL
+            // Strategy
             // 
-            this.StoppedPL.HeaderText = "PL";
-            this.StoppedPL.Name = "StoppedPL";
-            this.StoppedPL.ReadOnly = true;
-            this.StoppedPL.Width = 80;
+            this.Strategy.HeaderText = "Strategy";
+            this.Strategy.Name = "Strategy";
+            this.Strategy.ReadOnly = true;
+            this.Strategy.Width = 60;
+            // 
+            // Side
+            // 
+            this.Side.HeaderText = "Side";
+            this.Side.Name = "Side";
+            this.Side.ReadOnly = true;
+            this.Side.Width = 60;
+            // 
+            // Price
+            // 
+            this.Price.HeaderText = "Price";
+            this.Price.Name = "Price";
+            this.Price.ReadOnly = true;
+            this.Price.Width = 80;
+            // 
+            // Quantity
+            // 
+            this.Quantity.HeaderText = "Quantity";
+            this.Quantity.Name = "Quantity";
+            this.Quantity.ReadOnly = true;
+            this.Quantity.Width = 80;
+            // 
+            // LTP
+            // 
+            this.LTP.HeaderText = "LTP";
+            this.LTP.Name = "LTP";
+            this.LTP.ReadOnly = true;
+            this.LTP.Width = 80;
+            // 
+            // SL
+            // 
+            this.SL.HeaderText = "SL";
+            this.SL.Name = "SL";
+            this.SL.ReadOnly = true;
+            this.SL.Width = 80;
+            // 
+            // PL
+            // 
+            this.PL.HeaderText = "PL";
+            this.PL.Name = "PL";
+            this.PL.ReadOnly = true;
+            this.PL.Width = 80;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1076, 506);
+            this.ClientSize = new System.Drawing.Size(1086, 506);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.acctTextBox);
@@ -607,7 +607,9 @@
         public System.Windows.Forms.DataGridView _dgvStrategies;
         public System.Windows.Forms.DataGridView stoppedDataGridView;
         public System.Windows.Forms.TextBox LogTextBox;
-        private System.Windows.Forms.DataGridViewTextBoxColumn RunningSymbol;
+        private System.Windows.Forms.DataGridViewTextBoxColumn StoppedSymbol;
+        private System.Windows.Forms.DataGridViewTextBoxColumn StoppedPL;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Symbol;
         private System.Windows.Forms.DataGridViewTextBoxColumn Strategy;
         private System.Windows.Forms.DataGridViewTextBoxColumn Side;
         private System.Windows.Forms.DataGridViewTextBoxColumn Price;
@@ -615,8 +617,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn LTP;
         private System.Windows.Forms.DataGridViewTextBoxColumn SL;
         private System.Windows.Forms.DataGridViewTextBoxColumn PL;
-        private System.Windows.Forms.DataGridViewTextBoxColumn StoppedSymbol;
-        private System.Windows.Forms.DataGridViewTextBoxColumn StoppedPL;
     }
 }
 

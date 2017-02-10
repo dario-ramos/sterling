@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Sterling
 {
 
-    internal class SterlingModel
+    internal class SterlingModel : IDisposable
     {
         public event Action<Dictionary<string, Quote>> QuotesUpdate;
         public event Action<Strategy> TradeStopped;
@@ -13,6 +13,7 @@ namespace Sterling
         public event Action<string> LogMessage;
         public event Action<string, bool> ErrorMessage;
 
+        private bool disposedValue = false; // To detect redundant calls
         private Dictionary<Strategy, StrategyExecutor> _strategies;
         private IQuotesProvider _quotesProvider;
 
@@ -21,6 +22,7 @@ namespace Sterling
             _strategies = new Dictionary<Strategy, StrategyExecutor>();
             _quotesProvider = new DdfPlusQuotesProvider();
             _quotesProvider.QuotesUpdate += OnQuotesUpdate;
+            _quotesProvider.StartGettingQuotes();
         }
 
         public bool AddStrategy(Strategy strategy, string exchange, string account,
@@ -56,13 +58,20 @@ namespace Sterling
             _strategies[strategy].CancelAllOrders();
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
         public void StartStrategy(Strategy strategy)
         {
+            _quotesProvider.RegisterSymbol(strategy.Symbol);
             _strategies[strategy].StartTrade();
         }
 
         public void StopStrategy(Strategy strategy)
         {
+            _quotesProvider.UnregisterSymbol(strategy.Symbol);
             _strategies[strategy].ErrorMessage -= OnErrorMessage;
             _strategies[strategy].LogMessage -= OnLogMessage;
             _strategies[strategy].TradeStopped -= OnTradeStopped;
@@ -73,6 +82,21 @@ namespace Sterling
         public void StopTrade(Strategy strategy)
         {
             _strategies[strategy].StopTrade();
+            _strategies.Remove(strategy);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    _quotesProvider.QuotesUpdate -= OnQuotesUpdate;
+                    _quotesProvider.StopGettingQuotes();
+                    _quotesProvider.Dispose();
+                }
+                disposedValue = true;
+            }
         }
 
         private void OnErrorMessage(string msg, bool fatal)
@@ -94,7 +118,7 @@ namespace Sterling
                 {
                     if(strategy.Key.Symbol == quote.Key)
                     {
-                        strategy.Value.SetLastPrice(quote.Value.LastPrice);
+                        strategy.Value.LastPrice = quote.Value.LastPrice;
                     }
                 }
             }
@@ -111,5 +135,7 @@ namespace Sterling
         {
             UpdateTradeStats?.Invoke(strategy, buyPrice, quantity, sellPrice);
         }
+
+
     }
 }
