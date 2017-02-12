@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Quotes
+namespace QuotesProvider
 {
     public abstract class BaseQuotesProvider : IQuotesProvider
     {
@@ -134,7 +134,6 @@ namespace Quotes
                 }
                 Thread.Sleep(QUOTE_THREAD_SLEEP);
             }
-            Debug.WriteLine("QUOTES THREAD EXITED"); //TODO <DBG>
         }
 
         public void Dispose()

@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
-namespace Quotes
+namespace QuotesProvider
 {
     public class YahooQuotesProvider : BaseQuotesProvider
     {
@@ -42,7 +42,7 @@ namespace Quotes
                 {
                     foreach (dynamic quote in obj["query"]["results"]["quote"])
                     {
-                        quotes.Add(quote["symbol"], new Quotes.Quote { LastPrice = double.Parse(quote["LastTradePriceOnly"]) });
+                        quotes.Add(quote["symbol"], new QuotesProvider.Quote { LastPrice = double.Parse(quote["LastTradePriceOnly"]) });
                     }
                 }else
                 {

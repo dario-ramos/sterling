@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Quotes
+namespace QuotesProvider
 {
     public class DdfPlusQuotesProvider : BaseQuotesProvider
     {

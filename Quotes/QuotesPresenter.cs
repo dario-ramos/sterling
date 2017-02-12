@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QuotesProvider;
+using System;
 using System.Collections.Generic;
 
 namespace Quotes
