@@ -74,6 +74,7 @@
             this.label12 = new System.Windows.Forms.Label();
             this.cancelButton = new System.Windows.Forms.Button();
             this.lblVersion = new System.Windows.Forms.Label();
+            this.lblProvider = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this._dgvStrategies)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.stoppedDataGridView)).BeginInit();
             this.SuspendLayout();
@@ -81,7 +82,7 @@
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(28, 437);
+            this.button1.Location = new System.Drawing.Point(44, 437);
             this.button1.Margin = new System.Windows.Forms.Padding(2);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(118, 47);
@@ -94,7 +95,7 @@
             // 
             this.BuyRadioButton.AutoSize = true;
             this.BuyRadioButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BuyRadioButton.Location = new System.Drawing.Point(22, 393);
+            this.BuyRadioButton.Location = new System.Drawing.Point(41, 393);
             this.BuyRadioButton.Margin = new System.Windows.Forms.Padding(2);
             this.BuyRadioButton.Name = "BuyRadioButton";
             this.BuyRadioButton.Size = new System.Drawing.Size(50, 21);
@@ -107,7 +108,7 @@
             // 
             this.SellRadioButton.AutoSize = true;
             this.SellRadioButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SellRadioButton.Location = new System.Drawing.Point(107, 393);
+            this.SellRadioButton.Location = new System.Drawing.Point(113, 393);
             this.SellRadioButton.Margin = new System.Windows.Forms.Padding(2);
             this.SellRadioButton.Name = "SellRadioButton";
             this.SellRadioButton.Size = new System.Drawing.Size(49, 21);
@@ -118,7 +119,7 @@
             // 
             // PriceTextBox
             // 
-            this.PriceTextBox.Location = new System.Drawing.Point(98, 169);
+            this.PriceTextBox.Location = new System.Drawing.Point(98, 148);
             this.PriceTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.PriceTextBox.Name = "PriceTextBox";
             this.PriceTextBox.Size = new System.Drawing.Size(76, 20);
@@ -126,7 +127,7 @@
             // 
             // QuantTextBox
             // 
-            this.QuantTextBox.Location = new System.Drawing.Point(98, 90);
+            this.QuantTextBox.Location = new System.Drawing.Point(98, 75);
             this.QuantTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.QuantTextBox.Name = "QuantTextBox";
             this.QuantTextBox.Size = new System.Drawing.Size(76, 20);
@@ -134,7 +135,7 @@
             // 
             // SymbolTextBox
             // 
-            this.SymbolTextBox.Location = new System.Drawing.Point(98, 251);
+            this.SymbolTextBox.Location = new System.Drawing.Point(98, 230);
             this.SymbolTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.SymbolTextBox.Name = "SymbolTextBox";
             this.SymbolTextBox.Size = new System.Drawing.Size(76, 20);
@@ -142,7 +143,7 @@
             // 
             // ExchangeTextBox
             // 
-            this.ExchangeTextBox.Location = new System.Drawing.Point(98, 292);
+            this.ExchangeTextBox.Location = new System.Drawing.Point(98, 266);
             this.ExchangeTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.ExchangeTextBox.Name = "ExchangeTextBox";
             this.ExchangeTextBox.Size = new System.Drawing.Size(76, 20);
@@ -150,7 +151,7 @@
             // 
             // RTextBox
             // 
-            this.RTextBox.Location = new System.Drawing.Point(98, 326);
+            this.RTextBox.Location = new System.Drawing.Point(98, 304);
             this.RTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.RTextBox.Name = "RTextBox";
             this.RTextBox.Size = new System.Drawing.Size(76, 20);
@@ -158,7 +159,7 @@
             // 
             // STextBox
             // 
-            this.STextBox.Location = new System.Drawing.Point(98, 360);
+            this.STextBox.Location = new System.Drawing.Point(98, 344);
             this.STextBox.Margin = new System.Windows.Forms.Padding(2);
             this.STextBox.Name = "STextBox";
             this.STextBox.Size = new System.Drawing.Size(76, 20);
@@ -321,7 +322,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(38, 130);
+            this.label1.Location = new System.Drawing.Point(46, 112);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(40, 18);
@@ -343,7 +344,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(38, 169);
+            this.label2.Location = new System.Drawing.Point(41, 148);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(42, 18);
@@ -354,7 +355,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(28, 249);
+            this.label3.Location = new System.Drawing.Point(25, 229);
             this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(58, 18);
@@ -365,7 +366,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(10, 290);
+            this.label4.Location = new System.Drawing.Point(10, 266);
             this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(73, 18);
@@ -376,7 +377,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(30, 324);
+            this.label5.Location = new System.Drawing.Point(29, 306);
             this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(57, 18);
@@ -387,7 +388,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(38, 358);
+            this.label6.Location = new System.Drawing.Point(38, 343);
             this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(45, 18);
@@ -418,7 +419,7 @@
             // 
             // DPRTextBox
             // 
-            this.DPRTextBox.Location = new System.Drawing.Point(98, 130);
+            this.DPRTextBox.Location = new System.Drawing.Point(98, 110);
             this.DPRTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.DPRTextBox.Name = "DPRTextBox";
             this.DPRTextBox.Size = new System.Drawing.Size(76, 20);
@@ -428,7 +429,7 @@
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(25, 90);
+            this.label9.Location = new System.Drawing.Point(21, 74);
             this.label9.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(62, 18);
@@ -443,10 +444,10 @@
             "IQ_RSL",
             "IQ_Increment_Qty",
             "DSP"});
-            this.StrategyComboBox.Location = new System.Drawing.Point(90, 37);
+            this.StrategyComboBox.Location = new System.Drawing.Point(98, 31);
             this.StrategyComboBox.Margin = new System.Windows.Forms.Padding(2);
             this.StrategyComboBox.Name = "StrategyComboBox";
-            this.StrategyComboBox.Size = new System.Drawing.Size(92, 21);
+            this.StrategyComboBox.Size = new System.Drawing.Size(76, 21);
             this.StrategyComboBox.TabIndex = 1;
             // 
             // label11
@@ -474,7 +475,7 @@
             // 
             // NTextBox
             // 
-            this.NTextBox.Location = new System.Drawing.Point(98, 212);
+            this.NTextBox.Location = new System.Drawing.Point(98, 189);
             this.NTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.NTextBox.Name = "NTextBox";
             this.NTextBox.Size = new System.Drawing.Size(76, 20);
@@ -484,7 +485,7 @@
             // 
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.Location = new System.Drawing.Point(56, 210);
+            this.label10.Location = new System.Drawing.Point(64, 188);
             this.label10.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(19, 18);
@@ -493,7 +494,7 @@
             // 
             // acctTextBox
             // 
-            this.acctTextBox.Location = new System.Drawing.Point(997, 437);
+            this.acctTextBox.Location = new System.Drawing.Point(997, 398);
             this.acctTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.acctTextBox.Name = "acctTextBox";
             this.acctTextBox.Size = new System.Drawing.Size(88, 20);
@@ -503,7 +504,7 @@
             // 
             this.label12.AutoSize = true;
             this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label12.Location = new System.Drawing.Point(997, 408);
+            this.label12.Location = new System.Drawing.Point(997, 378);
             this.label12.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(62, 18);
@@ -525,17 +526,27 @@
             // lblVersion
             // 
             this.lblVersion.AutoSize = true;
-            this.lblVersion.Location = new System.Drawing.Point(999, 481);
+            this.lblVersion.Location = new System.Drawing.Point(998, 455);
             this.lblVersion.Name = "lblVersion";
             this.lblVersion.Size = new System.Drawing.Size(65, 13);
             this.lblVersion.TabIndex = 37;
             this.lblVersion.Text = "Version N/A";
+            // 
+            // lblProvider
+            // 
+            this.lblProvider.AutoSize = true;
+            this.lblProvider.Location = new System.Drawing.Point(998, 484);
+            this.lblProvider.Name = "lblProvider";
+            this.lblProvider.Size = new System.Drawing.Size(72, 13);
+            this.lblProvider.TabIndex = 38;
+            this.lblProvider.Text = "Provider: N/A";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1086, 506);
+            this.Controls.Add(this.lblProvider);
             this.Controls.Add(this.lblVersion);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.label12);
@@ -629,6 +640,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn SL;
         private System.Windows.Forms.DataGridViewTextBoxColumn PL;
         private System.Windows.Forms.Label lblVersion;
+        private System.Windows.Forms.Label lblProvider;
     }
 }
 

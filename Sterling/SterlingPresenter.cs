@@ -37,6 +37,14 @@ namespace Sterling
             return _model.CalculatePl(strategy, lastPrice);
         }
 
+        public string ProviderName
+        {
+            get
+            {
+                return _model.ProviderName;
+            }
+        }
+
         public void CancelAllOrders(Strategy strategy)
         {
             _model.CancelAllOrders(strategy);

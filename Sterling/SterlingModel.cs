@@ -52,6 +52,14 @@ namespace Sterling
             return _strategies[strategy].CalcPnL(lastPrice);
         }
 
+        public string ProviderName
+        {
+            get
+            {
+                return _quotesProvider.ProviderName;
+            }
+        }
+
         public void CancelAllOrders(Strategy strategy)
         {
             _strategies[strategy].Running = false;

@@ -225,7 +225,7 @@ namespace Sterling
                 _presenter.Dispose();
                 return;
             }
-            if (MessageBox.Show("Are you sure you want to exit?", "My Application", MessageBoxButtons.YesNo) == DialogResult.No)
+            if (MessageBox.Show("Are you sure you want to exit?", "Trader", MessageBoxButtons.YesNo) == DialogResult.No)
             {
                 // Cancel the Closing event from closing the form.
                 e.Cancel = true;
@@ -240,6 +240,7 @@ namespace Sterling
             _presenter = new SterlingPresenter(this);
             LoadSettings();
             lblVersion.Text = lblVersion.Text.Replace("N/A", Assembly.GetExecutingAssembly().GetName().Version.ToString());
+            lblProvider.Text = lblProvider.Text.Replace("N/A", _presenter.ProviderName);
         }
 
         private void SaveSettings()
