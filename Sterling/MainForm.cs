@@ -1,6 +1,7 @@
-﻿using Quotes;
+﻿using QuotesProvider;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -238,6 +239,7 @@ namespace Sterling
         {
             _presenter = new SterlingPresenter(this);
             LoadSettings();
+            lblVersion.Text = lblVersion.Text.Replace("N/A", Assembly.GetExecutingAssembly().GetName().Version.ToString());
         }
 
         private void SaveSettings()

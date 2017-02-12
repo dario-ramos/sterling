@@ -1,4 +1,4 @@
-﻿using Quotes;
+﻿using QuotesProvider;
 using System;
 using System.Collections.Generic;
 

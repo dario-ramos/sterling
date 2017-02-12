@@ -40,6 +40,14 @@
             this.StopButton = new System.Windows.Forms.Button();
             this.StopAllButton = new System.Windows.Forms.Button();
             this._dgvStrategies = new System.Windows.Forms.DataGridView();
+            this.Symbol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Strategy = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Side = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Price = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Quantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.LTP = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SL = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PL = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.stoppedDataGridView = new System.Windows.Forms.DataGridView();
             this.StoppedSymbol = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.StoppedPL = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -65,14 +73,7 @@
             this.acctTextBox = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
             this.cancelButton = new System.Windows.Forms.Button();
-            this.Symbol = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Strategy = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Side = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Price = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Quantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.LTP = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SL = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PL = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.lblVersion = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this._dgvStrategies)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.stoppedDataGridView)).BeginInit();
             this.SuspendLayout();
@@ -209,6 +210,62 @@
             this._dgvStrategies.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this._dgvStrategies.Size = new System.Drawing.Size(628, 249);
             this._dgvStrategies.TabIndex = 0;
+            // 
+            // Symbol
+            // 
+            this.Symbol.HeaderText = "Symbol";
+            this.Symbol.Name = "Symbol";
+            this.Symbol.ReadOnly = true;
+            this.Symbol.Width = 60;
+            // 
+            // Strategy
+            // 
+            this.Strategy.HeaderText = "Strategy";
+            this.Strategy.Name = "Strategy";
+            this.Strategy.ReadOnly = true;
+            this.Strategy.Width = 60;
+            // 
+            // Side
+            // 
+            this.Side.HeaderText = "Side";
+            this.Side.Name = "Side";
+            this.Side.ReadOnly = true;
+            this.Side.Width = 60;
+            // 
+            // Price
+            // 
+            this.Price.HeaderText = "Price";
+            this.Price.Name = "Price";
+            this.Price.ReadOnly = true;
+            this.Price.Width = 80;
+            // 
+            // Quantity
+            // 
+            this.Quantity.HeaderText = "Quantity";
+            this.Quantity.Name = "Quantity";
+            this.Quantity.ReadOnly = true;
+            this.Quantity.Width = 80;
+            // 
+            // LTP
+            // 
+            this.LTP.HeaderText = "LTP";
+            this.LTP.Name = "LTP";
+            this.LTP.ReadOnly = true;
+            this.LTP.Width = 80;
+            // 
+            // SL
+            // 
+            this.SL.HeaderText = "SL";
+            this.SL.Name = "SL";
+            this.SL.ReadOnly = true;
+            this.SL.Width = 80;
+            // 
+            // PL
+            // 
+            this.PL.HeaderText = "PL";
+            this.PL.Name = "PL";
+            this.PL.ReadOnly = true;
+            this.PL.Width = 80;
             // 
             // stoppedDataGridView
             // 
@@ -465,67 +522,21 @@
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
-            // Symbol
+            // lblVersion
             // 
-            this.Symbol.HeaderText = "Symbol";
-            this.Symbol.Name = "Symbol";
-            this.Symbol.ReadOnly = true;
-            this.Symbol.Width = 60;
-            // 
-            // Strategy
-            // 
-            this.Strategy.HeaderText = "Strategy";
-            this.Strategy.Name = "Strategy";
-            this.Strategy.ReadOnly = true;
-            this.Strategy.Width = 60;
-            // 
-            // Side
-            // 
-            this.Side.HeaderText = "Side";
-            this.Side.Name = "Side";
-            this.Side.ReadOnly = true;
-            this.Side.Width = 60;
-            // 
-            // Price
-            // 
-            this.Price.HeaderText = "Price";
-            this.Price.Name = "Price";
-            this.Price.ReadOnly = true;
-            this.Price.Width = 80;
-            // 
-            // Quantity
-            // 
-            this.Quantity.HeaderText = "Quantity";
-            this.Quantity.Name = "Quantity";
-            this.Quantity.ReadOnly = true;
-            this.Quantity.Width = 80;
-            // 
-            // LTP
-            // 
-            this.LTP.HeaderText = "LTP";
-            this.LTP.Name = "LTP";
-            this.LTP.ReadOnly = true;
-            this.LTP.Width = 80;
-            // 
-            // SL
-            // 
-            this.SL.HeaderText = "SL";
-            this.SL.Name = "SL";
-            this.SL.ReadOnly = true;
-            this.SL.Width = 80;
-            // 
-            // PL
-            // 
-            this.PL.HeaderText = "PL";
-            this.PL.Name = "PL";
-            this.PL.ReadOnly = true;
-            this.PL.Width = 80;
+            this.lblVersion.AutoSize = true;
+            this.lblVersion.Location = new System.Drawing.Point(999, 481);
+            this.lblVersion.Name = "lblVersion";
+            this.lblVersion.Size = new System.Drawing.Size(65, 13);
+            this.lblVersion.TabIndex = 37;
+            this.lblVersion.Text = "Version N/A";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1086, 506);
+            this.Controls.Add(this.lblVersion);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.acctTextBox);
@@ -617,6 +628,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn LTP;
         private System.Windows.Forms.DataGridViewTextBoxColumn SL;
         private System.Windows.Forms.DataGridViewTextBoxColumn PL;
+        private System.Windows.Forms.Label lblVersion;
     }
 }
 

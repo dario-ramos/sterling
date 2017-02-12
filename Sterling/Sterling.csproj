@@ -89,9 +89,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Quotes\Quotes.csproj">
-      <Project>{f8346640-6d33-4079-b0e0-99fa4e089245}</Project>
-      <Name>Quotes</Name>
+    <ProjectReference Include="..\QuoteProvider\QuotesProvider.csproj">
+      <Project>{b2a9b3c7-a2a8-4a1a-be70-f13433e131e4}</Project>
+      <Name>QuotesProvider</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

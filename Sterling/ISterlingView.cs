@@ -1,4 +1,4 @@
-﻿using Quotes;
+﻿using QuotesProvider;
 using System.Collections.Generic;
 
 namespace Sterling
