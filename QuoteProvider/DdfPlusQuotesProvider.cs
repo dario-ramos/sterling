@@ -1,5 +1,4 @@
 ﻿using ddfplus;
-using System;
 using System.Collections.Generic;
 
 namespace QuotesProvider

@@ -20,7 +20,7 @@ namespace Sterling
         public SterlingModel()
         {
             _strategies = new Dictionary<Strategy, StrategyExecutor>();
-            _quotesProvider = new DdfPlusQuotesProvider();
+            _quotesProvider = new MockProvider();
             _quotesProvider.QuotesUpdate += OnQuotesUpdate;
             _quotesProvider.StartGettingQuotes();
         }
