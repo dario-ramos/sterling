@@ -315,7 +315,7 @@ namespace Sterling
                 bool strategyAdded = _presenter.AddStrategy
                 (
                     newStrategy, ExchangeTextBox.Text, acctTextBox.Text,
-                    dpr, N, price,
+                    dpr, quantity, price,
                     r, s
                 );
                 if (strategyAdded)

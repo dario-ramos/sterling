@@ -21,13 +21,13 @@ namespace Sterling
         }
 
         public bool AddStrategy(Strategy strategy, string exchange, string account,
-                                double dpr, int N, double price,
+                                double dpr, int qty, double price,
                                 double r, int s)
         {
             return _model.AddStrategy
             (
                 strategy, exchange, account,
-                dpr, N, price,
+                dpr, qty, price,
                 r, s
             );
         }

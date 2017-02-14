@@ -26,7 +26,7 @@ namespace Sterling
         }
 
         public bool AddStrategy(Strategy strategy, string exchange, string account,
-                                double dpr, int n, double price,
+                                double dpr, int qty, double price,
                                 double r, int s)
         {
             if (_strategies.ContainsKey(strategy))
@@ -37,7 +37,7 @@ namespace Sterling
             _strategies[strategy] = new StrategyExecutor
             (
                 strategy, account, exchange,
-                price, n, dpr,
+                price, qty, dpr,
                 r, s
             );
             _strategies[strategy].ErrorMessage += OnErrorMessage;
