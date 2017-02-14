@@ -17,7 +17,11 @@ namespace QuotesProvider
 
         bool UnregisterSymbol(string symbol);
 
+        string Password { set; }
+
         string ProviderName { get; }
+
+        string User { set; }
 
         void StartGettingQuotes();
 

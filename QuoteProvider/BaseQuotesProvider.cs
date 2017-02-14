@@ -26,6 +26,10 @@ namespace QuotesProvider
 
         public abstract string ProviderName{ get; }
 
+        public string Password { get; set; }
+
+        public string User { get; set; }
+
         public bool RegisterSymbol(string symbol)
         {
             lock (_symbolsLock)

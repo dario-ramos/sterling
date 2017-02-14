@@ -6,12 +6,10 @@ namespace QuotesProvider
     public class DdfPlusQuotesProvider : BaseQuotesProvider
     {
         private Client _client;
-        private const string USER = "ajain";
-        private const string PASS = "devtest";
         private Dictionary<string, Quote> _quotes;
         private object _quotesLock;
 
-        public DdfPlusQuotesProvider(){
+        public DdfPlusQuotesProvider(string user, string pass){
             _quotes = new Dictionary<string, Quote>();
             _quotesLock = new object();
 
@@ -25,6 +23,8 @@ namespace QuotesProvider
             //_client.NewOHLCQuote += new Client.NewOHLCQuoteEventHandler(OnNewOHLCQuote);
             //_client.NewMessage += new Client.NewMessageEventHandler(OnNewMessage);
 
+            User = user;
+            Password = pass;
             UpdateConnectionSettings();
         }
 
@@ -112,8 +112,8 @@ namespace QuotesProvider
 
         private void UpdateConnectionSettings()
         {
-            Connection.Username = USER;
-            Connection.Password = PASS;
+            Connection.Username = User;
+            Connection.Password = Password;
             Connection.Mode = ConnectionMode.TCPClient;
             //Let ddf figure out Server and Port
             Connection.Server = "";
